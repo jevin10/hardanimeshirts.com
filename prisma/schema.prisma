@@ -1,0 +1,386 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["views", "relationJoins"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model Item {
+  id                      Int                       @id(map: "item_pkey") @default(autoincrement())
+  name                    String
+  description             String?
+  image                   String?
+  soulPrice               Int?
+  rarity                  Int?
+  category                ItemCategory?
+  ItemStorefrontInventory ItemStorefrontInventory[]
+  UserItem                UserItem[]
+}
+
+model ItemStorefront {
+  id                      Int                       @id(map: "itemstorefront_pkey") @default(autoincrement())
+  name                    String
+  description             String?
+  createdAt               DateTime?                 @default(now()) @db.Timestamptz(6)
+  updatedAt               DateTime?                 @default(now()) @db.Timestamptz(6)
+  ItemStorefrontInventory ItemStorefrontInventory[]
+}
+
+model ItemStorefrontInventory {
+  storefrontId   Int
+  itemId         Int
+  amount         Int?
+  soulPrice      Int?
+  Item           Item           @relation(fields: [itemId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "itemstorefrontinventory_itemid_fkey")
+  ItemStorefront ItemStorefront @relation(fields: [storefrontId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "itemstorefrontinventory_storefrontid_fkey")
+
+  @@id([storefrontId, itemId], map: "itemstorefrontinventory_pkey")
+}
+
+model Notifications {
+  id        Int              @id @default(autoincrement())
+  userid    String
+  type      NotificationType
+  message   String
+  read      Boolean          @default(false)
+  createdat DateTime         @default(now()) @db.Timestamptz(6)
+  readat    DateTime?        @db.Timestamptz(6)
+  data      Json?
+  endpoint  String?          @db.VarChar(255)
+  metadata  Json?            @default("{}")
+  User      User             @relation(fields: [userid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([createdat(sort: Desc)], map: "idx_notifications_created")
+  @@index([userid, createdat(sort: Desc)], map: "idx_notifications_user_created")
+  @@index([userid, read], map: "idx_notifications_user_read")
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model Soul {
+  id                                          Int               @id(map: "soul_pkey") @default(autoincrement())
+  name                                        String
+  description                                 String?
+  icon                                        String?
+  messageBackground                           String?
+  profileBackground                           String?
+  rarity                                      Int?
+  maxLevel                                    Int?
+  series                                      Int?
+  xpRequirement                               Json?
+  SoulSeries                                  SoulSeries?       @relation(fields: [series], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "soul_series_fkey")
+  SoulBannerSouls                             SoulBannerSouls[]
+  SoulEvolution_SoulEvolution_nextEvoIdToSoul SoulEvolution[]   @relation("SoulEvolution_nextEvoIdToSoul")
+  SoulEvolution_SoulEvolution_soulIdToSoul    SoulEvolution[]   @relation("SoulEvolution_soulIdToSoul")
+  SoulStats                                   SoulStats[]
+  SoulType                                    SoulType?
+  UserSoul                                    UserSoul[]
+}
+
+model SoulBanner {
+  id              Int               @id(map: "soulbanner_pkey") @default(autoincrement())
+  name            String
+  description     String?
+  createdAt       DateTime?         @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime?         @default(now()) @db.Timestamptz(6)
+  SoulBannerRates SoulBannerRates[]
+  SoulBannerSouls SoulBannerSouls[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model SoulBannerRates {
+  bannerId   Int
+  rarity     Int
+  rate       Decimal?   @db.Decimal(5, 2)
+  SoulBanner SoulBanner @relation(fields: [bannerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "soulbannerrates_bannerid_fkey")
+
+  @@id([bannerId, rarity], map: "soulbannerrates_pkey")
+}
+
+model SoulBannerSouls {
+  bannerId   Int
+  soulId     Int
+  SoulBanner SoulBanner @relation(fields: [bannerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "soulbannersouls_bannerid_fkey")
+  Soul       Soul       @relation(fields: [soulId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "soulbannersouls_soulid_fkey")
+
+  @@id([bannerId, soulId], map: "soulbannersouls_pkey")
+}
+
+model SoulEvolution {
+  soulId                             Int
+  nextEvoId                          Int
+  levelRequired                      Int?
+  Soul_SoulEvolution_nextEvoIdToSoul Soul @relation("SoulEvolution_nextEvoIdToSoul", fields: [nextEvoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "soulevolution_nextevoid_fkey")
+  Soul_SoulEvolution_soulIdToSoul    Soul @relation("SoulEvolution_soulIdToSoul", fields: [soulId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "soulevolution_soulid_fkey")
+
+  @@id([soulId, nextEvoId], map: "soulevolution_pkey")
+}
+
+model SoulSeries {
+  id          Int       @id(map: "soulseries_pkey") @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime? @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime? @default(now()) @db.Timestamptz(6)
+  Soul        Soul[]
+}
+
+model SoulStats {
+  soulId       Int
+  soulStatType soul_stat_type
+  baseValue    Int
+  scaling      Float?         @db.Real
+  Soul         Soul           @relation(fields: [soulId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_soul_stats_soul")
+
+  @@id([soulId, soulStatType])
+  @@index([soulId], map: "idx_soul_stats_soul_id")
+}
+
+model SoulType {
+  soulId   Int    @id
+  soulType String @db.VarChar(50)
+  Soul     Soul   @relation(fields: [soulId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_soul_type_soul")
+
+  @@index([soulId], map: "idx_soul_type_soul_id")
+}
+
+model User {
+  id                  String              @id
+  password_hash       String
+  username            String              @unique
+  profile_picture_url String?
+  Notifications       Notifications[]
+  Session             Session[]
+  UserProgress        UserProgress?
+  WebSocketSession    WebSocketSession[]
+  event_submissions   event_submissions[]
+  user_badges         user_badges[]
+  votes               votes[]
+}
+
+model UserItem {
+  id        Int       @id(map: "useritem_pkey") @default(autoincrement())
+  userId    String
+  itemId    Int?
+  amount    Int?
+  createdAt DateTime? @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime? @default(now()) @db.Timestamptz(6)
+  Item      Item?     @relation(fields: [itemId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "useritem_itemid_fkey")
+}
+
+model UserPity {
+  id           Int       @id(map: "userpity_pkey") @default(autoincrement())
+  userId       String
+  rolls        Int?
+  usedRarePity Boolean?
+  createdAt    DateTime? @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model UserProgress {
+  userId    String   @id
+  level     Int      @default(1)
+  currentXp Int      @default(0)
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([level(sort: Desc)], map: "idx_user_progress_level")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model UserSoul {
+  id         Int       @id(map: "usersoul_pkey") @default(autoincrement())
+  userId     String
+  soulId     Int?
+  amount     Int?
+  level      Int?
+  createdAt  DateTime? @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime? @default(now()) @db.Timestamptz(6)
+  isEquipped Boolean?  @default(false)
+  currentXp  Int?
+  Soul       Soul?     @relation(fields: [soulId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "usersoul_soulid_fkey")
+}
+
+model WebSocketSession {
+  id        String    @id
+  userId    String
+  clientId  String    @unique
+  createdAt DateTime? @default(now()) @db.Timestamptz(6)
+  lastPing  DateTime? @default(now()) @db.Timestamptz(6)
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([lastPing], map: "idx_websocket_lastping")
+  @@index([userId], map: "idx_websocket_userid")
+}
+
+model badges {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique @db.VarChar(50)
+  css         String
+  description String?
+  created_at  DateTime?     @default(now()) @db.Timestamp(6)
+  user_badges user_badges[]
+}
+
+model boards {
+  id        Int         @id @default(autoincrement())
+  name      String
+  posts_new posts_new[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model comments {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(255)
+  comment    String
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model event_submissions {
+  submission_id Int       @id @default(autoincrement())
+  username      String
+  image_url     String    @db.VarChar(255)
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  title         String    @db.VarChar(100)
+  description   String?
+  category      String    @db.VarChar(50)
+  User          User      @relation(fields: [username], references: [username], onDelete: NoAction, onUpdate: NoAction)
+  votes         votes[]
+}
+
+model posts {
+  post_id      BigInt       @id @default(autoincrement())
+  user_id      String       @db.VarChar(255)
+  content_type content_type
+  text         String?
+  image_url    String?      @db.VarChar(255)
+  created_at   DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime     @default(now()) @db.Timestamptz(6)
+  board        String       @default("general") @db.VarChar(50)
+  parent_id    Int?
+  posts_new    posts_new?   @relation(fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies      replies[]
+
+  @@index([created_at], map: "idx_posts_created_at")
+  @@index([user_id], map: "idx_posts_user_id")
+}
+
+model posts_new {
+  id              Int         @id @default(autoincrement())
+  board_id        Int
+  parent_id       Int?
+  content         String
+  created_at      DateTime?   @default(now()) @db.Timestamp(6)
+  user_id         String
+  image_url       String?     @db.VarChar(255)
+  latest_activity DateTime?   @default(now()) @db.Timestamp(6)
+  posts           posts[]
+  boards          boards      @relation(fields: [board_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  posts_new       posts_new?  @relation("posts_newToposts_new", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_posts_new posts_new[] @relation("posts_newToposts_new")
+
+  @@index([board_id, parent_id, created_at], map: "idx_board_post")
+}
+
+model replies {
+  reply_id       BigInt       @id @default(autoincrement())
+  user_id        String       @db.VarChar(255)
+  parent_post_id BigInt
+  content_type   content_type
+  text           String?
+  image_url      String?      @db.VarChar(255)
+  created_at     DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime     @default(now()) @db.Timestamptz(6)
+  board          String       @default("/blog/") @db.VarChar(50)
+  posts          posts        @relation(fields: [parent_post_id], references: [post_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_parent_post")
+
+  @@index([created_at], map: "idx_replies_created_at")
+  @@index([parent_post_id], map: "idx_replies_parent_post_id")
+  @@index([user_id], map: "idx_replies_user_id")
+}
+
+model soul_points {
+  user_id            String @id
+  points             Int    @default(0)
+  parent_posts_today Int    @default(0)
+  replies_today      Int    @default(0)
+}
+
+model user_badges {
+  user_id   String
+  badge_id  Int
+  earned_at DateTime? @default(now()) @db.Timestamp(6)
+  badges    badges    @relation(fields: [badge_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  User      User      @relation(fields: [user_id], references: [username], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([user_id, badge_id])
+  @@index([badge_id], map: "idx_user_badges_badge_id")
+  @@index([user_id], map: "idx_user_badges_user_id")
+}
+
+model votes {
+  vote_id           Int               @id @default(autoincrement())
+  username          String
+  submission_id     Int
+  vote_type         Int               @db.SmallInt
+  created_at        DateTime?         @default(now()) @db.Timestamptz(6)
+  event_submissions event_submissions @relation(fields: [submission_id], references: [submission_id], onDelete: NoAction, onUpdate: NoAction)
+  User              User              @relation(fields: [username], references: [username], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([username, submission_id])
+  @@index([submission_id], map: "idx_votes_submission_id")
+}
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view submission_vote_counts {
+  submission_id Int?
+  title         String?   @db.VarChar(100)
+  image_url     String?   @db.VarChar(255)
+  created_at    DateTime? @db.Timestamptz(6)
+  category      String?   @db.VarChar(50)
+  username      String?
+  vote_count    BigInt?
+  upvotes       BigInt?
+  downvotes     BigInt?
+
+  @@ignore
+}
+
+enum ItemCategory {
+  consumable
+}
+
+enum NotificationType {
+  MENTION
+  REPLY
+  FRIEND_REQUEST
+  FRIEND_ACCEPT
+  SYSTEM
+}
+
+enum content_type {
+  text
+  image
+  mixed
+}
+
+enum soul_stat_type {
+  BASED
+  CRINGE
+  SWAG
+  SPERG
+  COPE
+}

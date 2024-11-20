@@ -1,8 +1,7 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import type { ViteDevServer } from 'vite';
-import { WebSocketServer } from 'ws';
-import { onHttpServerUpgrade } from './src/lib/server/webSocketUtils';
+import { WebSocketManager } from './src/lib/server/ws/WebSocketServer';
 
 export default defineConfig({
 	plugins: [
@@ -10,12 +9,16 @@ export default defineConfig({
 		{
 			name: 'webSocketServer',
 			configureServer(server: ViteDevServer) {
-				const wss = new WebSocketServer({ noServer: true });
-				server.httpServer?.on('upgrade', onHttpServerUpgrade);
+				const manager = WebSocketManager.getInstance();
+				
+				server.httpServer?.on('upgrade', (req, socket, head) => {
+					manager.handleUpgrade(req, socket, head);
+				});
 
 				// Cleanup on close
 				server.httpServer?.on('close', () => {
-					wss.close();
+					const wss = manager['wss']; // Access private property for cleanup
+					wss?.close();
 				});
 			}
 		}

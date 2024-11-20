@@ -1,14 +1,10 @@
+import type { BaseWSMessage, WSMessage } from '$lib/types/ws/messages/base';
 import { writable } from 'svelte/store';
-
-interface WebSocketMessage {
-    type: string;
-    data: any;
-}
 
 interface WebSocketState {
     connected: boolean;
     socket: WebSocket | null;
-    messages: WebSocketMessage[];
+    messages: BaseWSMessage[];
 }
 
 function createWebSocketStore() {
@@ -40,7 +36,7 @@ function createWebSocketStore() {
 
         ws.addEventListener('message', (event) => {
             try {
-                const message = JSON.parse(event.data) as WebSocketMessage;
+                const message = JSON.parse(event.data) as BaseWSMessage;
                 update(state => ({
                     ...state,
                     messages: [...state.messages, message]
@@ -53,7 +49,7 @@ function createWebSocketStore() {
         update(state => ({ ...state, socket: ws }));
     }
 
-    function send(message: WebSocketMessage) {
+    async function send<T extends BaseWSMessage>(message: T): Promise<void> {
         update(state => {
             if (state.socket?.readyState === WebSocket.OPEN) {
                 state.socket.send(JSON.stringify(message));

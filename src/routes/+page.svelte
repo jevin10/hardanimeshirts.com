@@ -16,10 +16,12 @@
 
 	function sendTestMessage() {
 		wsStore.send({
-			type: 'test',
+			domain: 'imageboard',
+			action: 'request_content',
 			data: {
-				message: 'Hello server!',
-				timestamp: new Date().toISOString()
+				boardId: null,
+				page: 1,
+				limit: 5
 			}
 		});
 	}
@@ -28,7 +30,7 @@
 <div class="w-full flex flex-col items-center">
 	<div class="header mt-10">
 		<Banner />
-		<div class="logo font-bold text-black dark:text-white">hardanimeshirts.com</div>
+		<div class="logo font-times text-black dark:text-white">hardanimeshirts.com</div>
 	</div>
 
 	<div class="websocket-test mt-8 w-full max-w-2xl">
@@ -43,7 +45,7 @@
 			<h2 class="text-lg font-semibold mb-2">Messages ({messageCount}):</h2>
 			{#each $wsStore.messages as message}
 				<div class="message bg-white dark:bg-gray-700 p-3 rounded mb-2">
-					<strong class="text-blue-500">{message.type}:</strong>
+					<strong class="text-blue-500">{message.action}:</strong>
 					<pre class="mt-1 text-sm">{JSON.stringify(message.data, null, 2)}</pre>
 				</div>
 			{/each}

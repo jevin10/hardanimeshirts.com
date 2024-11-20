@@ -1,4 +1,4 @@
-import type { ExtendedWebSocketServer } from "$lib/server/webSocketUtils";
+import type { ExtendedWebSocketServer } from "$lib/server/ws/WebSocketServer";
 
 declare global {
 	namespace App {

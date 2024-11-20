@@ -1,66 +1,17 @@
 import { lucia } from "$lib/server/auth";
 import type { Handle } from "@sveltejs/kit";
-import { createWSSGlobalInstance, GlobalThisWSS } from '$lib/server/webSocketUtils';
-import type { ExtendedGlobal, ExtendedWebSocket } from '$lib/server/webSocketUtils';
 import { building } from '$app/environment';
-import type { RawData } from 'ws';
-
-interface WSMessage {
-	type: string;
-	data: unknown;
-}
+import { GlobalThisWSS, WebSocketManager, type ExtendedGlobal } from "$lib/server/ws/WebSocketServer";
 
 let wssInitialized = false;
 
 const startupWebsocketServer = () => {
-	if (wssInitialized) return;
-	console.log('[wss:kit] setup');
-
-	// Create WSS instance if it doesn't exist
-	if (!(globalThis as ExtendedGlobal)[GlobalThisWSS]) {
-		createWSSGlobalInstance();
-	}
-
-	const wss = (globalThis as ExtendedGlobal)[GlobalThisWSS];
-
-	if (wss !== undefined) {
-		// Add any global WebSocket event handlers here
-		wss.on('connection', (ws: ExtendedWebSocket) => {
-			console.log(`[wss:kit] client connected`);
-
-			// Send welcome message
-			ws.send(JSON.stringify({
-				type: 'welcome',
-				data: { timestamp: new Date().toISOString() }
-			}));
-
-			// Handle incoming messages
-			ws.on('message', (data: RawData) => {
-				try {
-					const message = JSON.parse(data.toString()) as WSMessage;
-					console.log('[wss:kit] received message:', message);
-
-					// Echo the message back to the client
-					ws.send(JSON.stringify({
-						type: 'server-response',
-						data: {
-							originalMessage: message,
-							serverTimestamp: new Date().toISOString()
-						}
-					}));
-
-				} catch (err) {
-					console.error('[wss:kit] error parsing message:', err);
-				}
-			});
-
-			ws.on('close', () => {
-				console.log(`[wss:kit] client disconnected`);
-			});
-		});
-
-		wssInitialized = true;
-	}
+    if (wssInitialized) return;
+    console.log('[wss:kit] setup');
+    
+    const manager = WebSocketManager.getInstance();
+    manager.initialize();
+    wssInitialized = true;
 };
 
 export const handle: Handle = async ({ event, resolve }) => {

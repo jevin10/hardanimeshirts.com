@@ -35,7 +35,7 @@
   ];
 
   let currentImageIndex = 0;
-  let intervalId: number;
+  let intervalId: ReturnType<typeof setInterval>;
 
   const specialRoutes = new Map([
     ['/void', GeneralImage],
@@ -63,28 +63,10 @@
   $: currentImage = specialRoutes.get($page.url.pathname) || homeImages[currentImageIndex];
 </script>
 
-<div class="banner">
+<div class="border-none bg-transparent p-0">
   <img
-    class="hardimages border-2 border-black dark:border-white"
+    class="block mx-auto mt-3 h-40 md:h-24 border-2 border-black dark:border-white"
     src={currentImage}
     alt="She only loves me for my hard anime shirts."
   />
 </div>
-
-<style>
-  .banner {
-    border: none;
-    background: none;
-    padding: 0;
-  }
-  .hardimages {
-    display: block;
-    margin: 12px auto 0 auto;
-    height: 10rem;
-  }
-  @media screen and (max-width: 768px) {
-    .hardimages {
-      height: 6rem;
-    }
-  }
-</style>

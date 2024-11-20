@@ -11,7 +11,7 @@
   });
 </script>
 
-<div class="nav-container font-times">
+<div class="relative font-times">
   <nav
     class="bg-white dark:bg-black text-black dark:text-white border-b border-black dark:border-white py-1 px-1 flex justify-between items-center"
   >
@@ -40,9 +40,3 @@
     {/if}
   </div>
 </div>
-
-<style>
-  .nav-container {
-    position: relative;
-  }
-</style>

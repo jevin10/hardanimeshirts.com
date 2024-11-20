@@ -1,4 +1,4 @@
-import type { BaseWSMessage } from "$lib/types/ws/messages/base";
+import type { BaseWSMessage } from "../../types/ws/messages/base";
 import type DomainHandler from "./DomainHandler";
 import { ImageboardDomainHandler } from "./domains/imageboard/ImageboardDomainHandler";
 

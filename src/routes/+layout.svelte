@@ -29,7 +29,6 @@
   });
 </script>
 
-<AnimatedTitle />
 <div class="h-screen">
   <NavigationBar />
   <main class="bg-white dark:bg-black h-full">

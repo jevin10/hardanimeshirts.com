@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 @font-face {
-	font-family: 'Times New Roman Local';
-	src: url('/fonts/Times\ New\ Roman.ttf') format('truetype');
-	font-style: normal;
-	font-display: swap;
+  font-family: 'Times New Roman Local';
+  src: url('/fonts/Times\ New\ Roman.ttf') format('truetype');
+  font-style: normal;
+  font-display: swap;
 }

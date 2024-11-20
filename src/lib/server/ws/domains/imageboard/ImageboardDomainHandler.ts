@@ -35,7 +35,7 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
       const posts = await this.fetchPosts(validatedData);
 
       return {
-				domain: 'imageboard',
+        domain: 'imageboard',
         action: 'content_response',
         data: { posts }
       };
@@ -44,7 +44,7 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
       if (error instanceof z.ZodError) {
         // Handle validation errors
         return {
-					domain: 'imageboard',
+          domain: 'imageboard',
           action: 'error',
           data: {
             code: 'VALIDATION_ERROR',
@@ -55,7 +55,7 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
 
       // Handle other errors
       return {
-				domain: 'imageboard',
+        domain: 'imageboard',
         action: 'error',
         data: {
           code: 'INTERNAL_ERROR',
@@ -65,10 +65,10 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
     }
   }
 
-	// TODO: Abstract this and make it actually work
+  // TODO: Abstract this and make it actually work
   private async fetchPosts(params: RequestContentPayload): Promise<posts_new[]> {
     // Implement your database query logic here
-		params.boardId
-    return [ { id: 1, board_id: 1, parent_id: null, content: 'test', created_at: null, user_id: '1owroller', image_url: null, latest_activity: null} ];
+    params.boardId
+    return [{ id: 1, board_id: 1, parent_id: null, content: 'test', created_at: null, user_id: '1owroller', image_url: null, latest_activity: null }];
   }
 }

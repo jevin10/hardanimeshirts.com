@@ -1,7 +1,7 @@
 import type { posts_new } from "@prisma/client";
 
 interface RequestContentPayload {
-	boardId: number | null; // if null is passed, then it's just all boards
+  boardId: number | null; // if null is passed, then it's just all boards
   page: number;
   threadId?: string;
   limit: number;
@@ -25,7 +25,7 @@ export type ImageboardClientAction = {
 
 // server->client actions and their payloads
 export type ImageboardServerAction = {
-	'content_response': { posts: posts_new[] };
+  'content_response': { posts: posts_new[] };
   'post_created': { post: posts_new };
   'post_deleted': { postId: number };
   'thread_response': { thread: posts_new & posts_new[] };
@@ -34,7 +34,7 @@ export type ImageboardServerAction = {
 
 // Type helpers for accessing these
 export type ImageboardActionType = keyof (ImageboardClientAction & ImageboardServerAction);
-export type ImageboardPayload<T extends ImageboardActionType> = 
+export type ImageboardPayload<T extends ImageboardActionType> =
   T extends keyof ImageboardClientAction ? ImageboardClientAction[T] :
   T extends keyof ImageboardServerAction ? ImageboardServerAction[T] :
   never;

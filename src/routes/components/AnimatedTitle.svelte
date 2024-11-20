@@ -1,10 +1,12 @@
 <script lang="ts">
-  const FULL_TEXT = "hardanimeshirts?????????? HARDANIMESHIRTS?????????? ";
+  const FULL_TEXT = 'hardanimeshirts?????????? HARDANIMESHIRTS?????????? ';
   const WINDOW_SIZE = 10;
-  
+
   let currentIndex = $state(0);
-  
-  let currentTitle = $derived((FULL_TEXT + FULL_TEXT).slice(currentIndex, currentIndex + WINDOW_SIZE));
+
+  let currentTitle = $derived(
+    (FULL_TEXT + FULL_TEXT).slice(currentIndex, currentIndex + WINDOW_SIZE)
+  );
 
   $effect(() => {
     const timer = setInterval(() => {

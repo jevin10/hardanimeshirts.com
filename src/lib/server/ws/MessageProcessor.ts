@@ -14,7 +14,7 @@ export class MessageProcessor {
 
   async handleMessage<T extends BaseWSMessage>(message: T): Promise<T | void> {
     const handler = this.domainHandlers.get(message.domain) as DomainHandler<T>;
-    
+
     if (!handler) {
       throw new Error(`No handler for domain: ${message.domain}`);
     }

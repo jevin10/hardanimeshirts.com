@@ -1,8 +1,7 @@
-import type { BaseWSMessage } from "../../types/ws/messages/base";
-import type DomainHandler from "../../shared/DomainHandler";
-import { ImageboardDomainHandler } from "./domains/imageboard/ImageboardDomainHandler";
+import type { BaseWSMessage } from "$lib/types/ws/messages/base";
+import type DomainHandler from "$lib/shared/DomainHandler";
 
-// Processes messages for the server
+// Processes messages for the client
 // Takes messages and routes them to their proper DomainHandlers
 export class MessageProcessor {
   private domainHandlers: Map<string, DomainHandler<BaseWSMessage>>;
@@ -10,7 +9,6 @@ export class MessageProcessor {
   constructor() {
     this.domainHandlers = new Map();
     // register domain handlers
-    this.domainHandlers.set('imageboard', new ImageboardDomainHandler());
   }
 
   async handleMessage<T extends BaseWSMessage>(message: T): Promise<T | void> {

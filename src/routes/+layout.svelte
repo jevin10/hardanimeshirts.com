@@ -1,10 +1,13 @@
 <script lang="ts">
   import '../app.css';
-  import { wsStore } from '$lib/client/ws/wsStore';
+  import { getWsStore, setWsStore } from '$lib/stores/websocket';
   import { browser } from '$app/environment';
   import NavigationBar from '$lib/components/NavigationBar/NavigationBar.svelte';
 
+  const wsStore = setWsStore();
+
   let { children } = $props();
+
   let connected = $state(false);
   let messages = $state<any[]>([]);
 

@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { wsStore } from '$lib/client/ws/wsStore';
+  import { getWsStore } from '$lib/stores/websocket';
+
+  const wsStore = getWsStore();
 
   let connected = $state(false);
 

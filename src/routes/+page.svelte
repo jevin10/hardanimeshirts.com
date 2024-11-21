@@ -1,7 +1,9 @@
 <script lang="ts">
   import Banner from './components/Banner.svelte';
-  import { wsStore } from '$lib/client/ws/wsStore';
+  import { getWsStore } from '$lib/stores/websocket';
   import LatestPosts from './components/LatestPosts.svelte';
+
+  const wsStore = getWsStore();
 
   let messageCount = $state(0);
   let connected = $state(false);

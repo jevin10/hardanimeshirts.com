@@ -1,5 +1,6 @@
 import type { BaseWSMessage, WSMessage } from '$lib/types/ws/messages/base';
-import { writable } from 'svelte/store';
+import { getContext, setContext } from 'svelte';
+import { writable, type Writable } from 'svelte/store';
 
 interface WebSocketState {
   connected: boolean;
@@ -7,7 +8,16 @@ interface WebSocketState {
   messages: BaseWSMessage[];
 }
 
-function createWebSocketStore() {
+interface WebSocketStore {
+  subscribe: Writable<WebSocketState>['subscribe'];
+  connect: () => void;
+  disconnect: () => void;
+  send: <T extends BaseWSMessage>(message: T) => Promise<void>;
+}
+
+const WS_CTX_KEY = Symbol('WS_CTX');
+
+export function createWebSocketStore(): WebSocketStore {
   const { subscribe, set, update } = writable<WebSocketState>({
     connected: false,
     socket: null,
@@ -76,4 +86,16 @@ function createWebSocketStore() {
   };
 }
 
-export const wsStore = createWebSocketStore();
+export function setWsStore(): WebSocketStore {
+  const wsStore = createWebSocketStore();
+  setContext(WS_CTX_KEY, wsStore);
+  return wsStore;
+}
+
+export function getWsStore(): WebSocketStore {
+  const store = getContext<WebSocketStore>(WS_CTX_KEY);
+  if (!store) {
+    throw new Error('getWsStore must be used within a component with setWsStore');
+  }
+  return store;
+}

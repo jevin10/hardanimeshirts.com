@@ -1,5 +1,5 @@
 import type { BaseWSMessage } from "../../types/ws/messages/base";
-import type DomainHandler from "./DomainHandler";
+import type DomainHandler from "../../shared/DomainHandler";
 import { ImageboardDomainHandler } from "./domains/imageboard/ImageboardDomainHandler";
 
 // Takes messages and routes them to their proper DomainHandlers

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { wsStore } from '$lib/stores/websocket';
+  import { wsStore } from '$lib/client/ws/wsStore';
 
   let connected = $state(false);
 

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { posts_new } from "@prisma/client";
 import type { ImageboardMessage } from "../../../../types/ws/messages/imageboard";
-import type DomainHandler from '../../DomainHandler';
+import type DomainHandler from '../../../../shared/DomainHandler';
 import { ImageboardService, imageboardService } from '../../../../server/imageboard/ImageboardService';
 
 // Define the request content schema

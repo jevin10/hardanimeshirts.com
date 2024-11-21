@@ -1,6 +1,6 @@
 <script lang="ts">
   import '../app.css';
-  import { wsStore } from '$lib/stores/websocket';
+  import { wsStore } from '$lib/client/ws/wsStore';
   import { browser } from '$app/environment';
   import NavigationBar from '$lib/components/NavigationBar/NavigationBar.svelte';
 

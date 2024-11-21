@@ -3,7 +3,6 @@
   import { wsStore } from '$lib/stores/websocket';
   import { browser } from '$app/environment';
   import NavigationBar from '$lib/components/NavigationBar/NavigationBar.svelte';
-  import AnimatedTitle from './components/AnimatedTitle.svelte';
 
   let { children } = $props();
   let connected = $state(false);
@@ -31,7 +30,7 @@
 
 <div class="h-screen">
   <NavigationBar />
-  <main class="bg-white dark:bg-black h-full">
+  <main class="h-full">
     {@render children()}
   </main>
 </div>

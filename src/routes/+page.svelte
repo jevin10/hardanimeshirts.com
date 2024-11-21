@@ -1,6 +1,7 @@
 <script lang="ts">
   import Banner from './components/Banner.svelte';
   import { wsStore } from '$lib/stores/websocket';
+  import LatestPosts from './components/LatestPosts.svelte';
 
   let messageCount = $state(0);
   let connected = $state(false);
@@ -27,20 +28,33 @@
   });
 </script>
 
+<svelte:head>
+  <title>hardanimeshirts.com</title>
+  <meta
+    name="description"
+    content="“Blessed Are the Weebs, for They Will Inherit the Earth“ (Giatt 5:5)"
+  />
+  <meta
+    name="keywords"
+    content="anime clothing, anime streetwear, anime shirts, japanese streetwear, anime imageboard"
+  />
+  <meta name="robots" content="index, follow" />
+</svelte:head>
+
 <div class="w-full flex flex-col items-center">
   <div class="mt-10">
     <Banner />
     <div
-      class="font-times text-black dark:text-white text-[clamp(2rem,1rem+1vw,3rem)] tracking-[clamp(-0.5px,calc(-1px-0.2vw),-3px)] text-center w-full"
+      class="font-bold text-[clamp(2.2rem,2.2rem+0.8vw,3rem)] tracking-[clamp(-0.5px,calc(-1px-0.2vw),-3px)] text-center w-full"
     >
       hardanimeshirts.com
     </div>
   </div>
-  <div class="mt-8 w-full max-w-2xl">
-    <div class="mt-4 bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
-      <h2 class="text-lg font-semibold mb-2">Messages ({messageCount}):</h2>
+  <div class="mt-2 w-full max-w-3xl">
+    <div class="p-4">
+      <LatestPosts />
       {#each $wsStore.messages as message}
-        <div class="bg-white dark:bg-gray-700 p-3 rounded mb-2">
+        <div class="p-3 rounded mb-2">
           <strong class="text-blue-500">{message.action}:</strong>
           <pre class="mt-1 text-sm whitespace-pre-wrap break-words">{JSON.stringify(
               message.data,

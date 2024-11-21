@@ -65,7 +65,7 @@
 
 <div class="border-none bg-transparent p-0">
   <img
-    class="block mx-auto mt-3 h-40 md:h-48 border-2 border-black dark:border-white"
+    class="block mx-auto h-40 md:h-48 border-2 border-black dark:border-white"
     src={currentImage}
     alt="She only loves me for my hard anime shirts."
   />

@@ -3,7 +3,7 @@ export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
     fontFamily: {
-      sans: ['"Times New Roman"', 'sans-serif'],
+      sans: ['Arial', 'Helvetica', 'sans-serif'],
       times: ['Times New Roman Local', 'Times New Roman', 'Times', 'serif']
     },
     extend: {

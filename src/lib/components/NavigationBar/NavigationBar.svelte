@@ -13,26 +13,26 @@
 
 <div class="relative font-times">
   <nav
-    class="bg-white dark:bg-black text-black dark:text-white border-b border-black dark:border-white py-1 px-1 flex justify-between items-center"
+    class="bg-white dark:bg-black border-b border-black dark:border-white py-1 px-1 flex justify-between items-center"
   >
     <div class="flex items-center">
-      <a href="/" class="mr-2">hardanimeshirts.com</a>
+      <a href="/" class="nav-link mr-2">hardanimeshirts.com</a>
       <span class="text-gray-500 mr-1">[</span>
-      <a href="/void" class="mr-1">v</a>
+      <a href="/void" class="nav-link mr-1">v</a>
       <span class="text-gray-500 mr-1">/</span>
-      <a href="/seams" class="mr-1">s</a>
+      <a href="/seams" class="nav-link mr-1">s</a>
+      <span class="nav-link text-gray-500 mr-1">/</span>
+      <a href="/adventures" class="nav-link mr-1">a</a>
       <span class="text-gray-500 mr-1">/</span>
-      <a href="/adventures" class="mr-1">a</a>
-      <span class="text-gray-500 mr-1">/</span>
-      <a href="/shop" class="mr-1">shop</a>
+      <a href="/shop" class="nav-link mr-1">shop</a>
       <span class="text-gray-500">]</span>
     </div>
-    <div class="flex space-x-1 items-center">
-      <a href="/menu" class="">[menu]</a>
+    <div class="nav-link flex space-x-1 items-center">
+      <a href="/menu" class="nav-link">[menu]</a>
     </div>
   </nav>
   <div class="pt-1 px-1 text-xs flex justify-start bg-white dark:bg-black">
-    <span class="mr-1 text-black dark:text-white">us-west |</span>
+    <span class="mr-1">us-west |</span>
     {#if connected}
       <span class="text-green-500 dark:text-green-400">■ connected</span>
     {:else}

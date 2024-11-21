@@ -6,6 +6,43 @@
   font-family: 'Times New Roman Local';
   src: url('/fonts/Times\ New\ Roman.ttf') format('truetype');
   font-style: normal;
+  font-weight: 400;
   font-display: swap;
+}
+
+@font-face {
+  font-family: 'Times New Roman Local';
+  src: url('/fonts/Times\ New\ Roman\ Italic.ttf') format('truetype');
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Times New Roman Local';
+  src: url('/fonts/Times\ New\ Roman\ Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Times New Roman Local';
+  src: url('/fonts/Times\ New\ Roman\ Bold\ Italic.ttf') format('truetype');
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@layer base {
+  html {
+    @apply font-times text-black dark:text-white bg-white dark:bg-black ;
+  }
+  a {
+    @apply text-black dark:text-white hover:text-gray-500 underline decoration-dotted;
+  }
+  .nav-link {
+    @apply no-underline;
+  }
 }
 

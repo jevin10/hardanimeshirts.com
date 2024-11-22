@@ -1,33 +1,64 @@
 <script lang="ts">
   import Banner from './components/Banner.svelte';
   import { getWsStore } from '$lib/stores/websocket';
+  import { getPostsStore } from '$lib/stores/posts';
+  import type { posts_new } from '@prisma/client';
   import LatestPosts from './components/LatestPosts.svelte';
 
   const wsStore = getWsStore();
+  const postsStore = getPostsStore();
 
-  let messageCount = $state(0);
-  let connected = $state(false);
-
-  // Handle websocket state changes
+  // Add logging to debug the postsStore value directly
   $effect(() => {
-    connected = $wsStore.connected;
-    messageCount = $wsStore.messages.length;
+    console.log('PostsStore changed:', $postsStore);
   });
 
-  // Initial data fetch
-  $effect(() => {
-    if (connected) {
-      wsStore.send({
-        domain: 'imageboard',
-        action: 'request_content',
-        data: {
-          boardId: null,
-          page: 1,
-          limit: 3
-        }
-      });
+  let latestPosts = $derived.by(() => {
+    console.log('Deriving latestPosts from:', $postsStore); // Add debug log
+
+    const allPosts: posts_new[] = [];
+
+    if (!$postsStore.threads.length && !$postsStore.orphans.length) {
+      console.log('No posts found in store');
+      return [];
     }
+
+    for (const thread of $postsStore.threads) {
+      allPosts.push(thread.parent);
+      allPosts.push(...thread.children);
+    }
+    allPosts.push(...$postsStore.orphans);
+
+    console.log('All posts before sorting:', allPosts.length); // Debug length
+
+    const sortedPosts = allPosts
+      .sort((a, b) => {
+        const dateA = a.latest_activity ? new Date(a.latest_activity) : new Date(0);
+        const dateB = b.latest_activity ? new Date(b.latest_activity) : new Date(0);
+        return dateB.getTime() - dateA.getTime();
+      })
+      .slice(0, 3);
+
+    console.log('Sorted and sliced posts:', sortedPosts); // Debug final result
+    return sortedPosts;
   });
+
+  // Add effect to track latestPosts changes
+  $effect(() => {
+    console.log('latestPosts changed:', latestPosts);
+  });
+
+  function test() {
+    wsStore.send({
+      domain: 'imageboard',
+      action: 'request_content',
+      data: {
+        boardId: null,
+        page: 1,
+        limit: 5
+      }
+    });
+  }
 </script>
 
 <svelte:head>
@@ -54,17 +85,7 @@
   </div>
   <div class="mt-2 w-full max-w-3xl">
     <div class="p-4">
-      <LatestPosts />
-      {#each $wsStore.messages as message}
-        <div class="p-3 rounded mb-2">
-          <strong class="text-blue-500">{message.action}:</strong>
-          <pre class="mt-1 text-sm whitespace-pre-wrap break-words">{JSON.stringify(
-              message.data,
-              null,
-              2
-            )}</pre>
-        </div>
-      {/each}
+      <LatestPosts posts={latestPosts} />
     </div>
   </div>
 </div>

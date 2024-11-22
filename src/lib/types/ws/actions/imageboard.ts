@@ -29,7 +29,11 @@ export type ImageboardServerAction = {
   'post_created': { post: posts_new };
   'post_deleted': { postId: number };
   'thread_response': { thread: posts_new & posts_new[] };
-  'error': { message: string; code: string };
+  'error': {
+    code: string;
+    message: string;
+    details?: any;
+  };
 }
 
 // Type helpers for accessing these

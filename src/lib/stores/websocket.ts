@@ -1,3 +1,4 @@
+import { WebSocketClient } from '$lib/client/ws/WebSocketClient';
 import type { BaseWSMessage, WSMessage } from '$lib/types/ws/messages/base';
 import { getContext, setContext } from 'svelte';
 import { writable, type Writable } from 'svelte/store';
@@ -8,7 +9,7 @@ interface WebSocketState {
   messages: BaseWSMessage[];
 }
 
-interface WebSocketStore {
+export interface WebSocketStore {
   subscribe: Writable<WebSocketState>['subscribe'];
   connect: () => void;
   disconnect: () => void;
@@ -17,7 +18,7 @@ interface WebSocketStore {
 
 const WS_CTX_KEY = Symbol('WS_CTX');
 
-export function createWebSocketStore(): WebSocketStore {
+function createWebSocketStore(): WebSocketStore {
   const { subscribe, set, update } = writable<WebSocketState>({
     connected: false,
     socket: null,
@@ -29,9 +30,19 @@ export function createWebSocketStore(): WebSocketStore {
   function connect() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const ws = new WebSocket(`${protocol}//${window.location.host}/websocket`);
+    const wsClient = WebSocketClient.getInstance();
 
     ws.addEventListener('open', () => {
       update(state => ({ ...state, connected: true }));
+      send({
+        domain: 'imageboard',
+        action: 'request_content',
+        data: {
+          boardId: null,
+          page: 1,
+          limit: 3
+        }
+      });
       console.log('[websocket] connection open');
     });
 
@@ -47,10 +58,14 @@ export function createWebSocketStore(): WebSocketStore {
     ws.addEventListener('message', (event) => {
       try {
         const message = JSON.parse(event.data) as BaseWSMessage;
+
         update(state => ({
           ...state,
           messages: [...state.messages, message]
         }));
+
+        wsClient.processMessage(message);
+
       } catch (err) {
         console.error('[websocket] error parsing message:', err);
       }

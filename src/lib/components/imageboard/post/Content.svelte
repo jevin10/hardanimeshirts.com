@@ -16,15 +16,16 @@
 
   let { post }: { post: posts_new } = $props();
 
-  function formatDate(date: Date): string {
-    return date.toISOString().replace('T', ' ').slice(0, 19);
+  function formatDate(date: Date | string): string {
+    const dateObj = date instanceof Date ? date : new Date(date);
+    return dateObj.toISOString().replace('T', ' ').slice(0, 19);
   }
 
   let boardName = BoardService.getBoardName(post.board_id);
 </script>
 
 {#snippet header(data: HeaderProps)}
-  <div class="text-sm font-sans">
+  <div class="text-sm">
     <a href="/profile/{data.username}">{data.username}</a>
     {formatDate(data.date)}
     No.{data.id}
@@ -32,7 +33,7 @@
 {/snippet}
 
 {#snippet body(data: BodyProps)}
-  <div class="font-sans">
+  <div>
     <div class="text-xs">
       {#if data.parent}
         <div class="ms-2">

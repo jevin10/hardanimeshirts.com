@@ -6,10 +6,12 @@
   import { setPostsStore, type PostsStore } from '$lib/stores/posts';
   import { WebSocketClient } from '$lib/client/ws/WebSocketClient';
   import { onDestroy, onMount } from 'svelte';
+  import { setImageboardState, type Imageboard } from '$lib/client/imageboard/Imageboard.svelte';
 
-  // set up global stores and wsClient
+  // set up global state and wsClient
   const postsStore: PostsStore = setPostsStore();
   const wsStore: WebSocketStore = setWsStore();
+  const imageboardState: Imageboard = setImageboardState();
   const wsClient = WebSocketClient.initialize(postsStore, wsStore);
 
   let { children } = $props();

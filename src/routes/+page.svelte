@@ -8,18 +8,10 @@
   const wsStore = getWsStore();
   const postsStore = getPostsStore();
 
-  // Add logging to debug the postsStore value directly
-  $effect(() => {
-    console.log('PostsStore changed:', $postsStore);
-  });
-
   let latestPosts = $derived.by(() => {
-    console.log('Deriving latestPosts from:', $postsStore); // Add debug log
-
     const allPosts: posts_new[] = [];
 
     if (!$postsStore.threads.length && !$postsStore.orphans.length) {
-      console.log('No posts found in store');
       return [];
     }
 
@@ -29,8 +21,6 @@
     }
     allPosts.push(...$postsStore.orphans);
 
-    console.log('All posts before sorting:', allPosts.length); // Debug length
-
     const sortedPosts = allPosts
       .sort((a, b) => {
         const dateA = a.latest_activity ? new Date(a.latest_activity) : new Date(0);
@@ -39,7 +29,6 @@
       })
       .slice(0, 3);
 
-    console.log('Sorted and sliced posts:', sortedPosts); // Debug final result
     return sortedPosts;
   });
 

@@ -39,36 +39,40 @@ function createPostsStore(): PostsStore {
     return currentData.orphans.some(o => o.id === postId);
   }
 
+  // TODO: add to individuals stores for boards and threads based on proximity
   function add(posts: posts_new[]) {
     update(currentData => {
-      // Filter out posts that already exist in the store
+      // filter out posts that already exist in the store
       const newPosts = posts.filter(post => !postExists(currentData, post.id));
 
-      // If no new posts, return current data unchanged
       if (newPosts.length === 0) {
         return currentData;
       }
 
-      // Create Maps for processing new posts
+      // maps for quicker lookups
       const existingParents = new Map(currentData.threads.map(t => [t.parent.id, t]));
       const newPostsMap = new Map(newPosts.map(p => [p.id, p]));
       const newChildren = new Map<number, posts_new[]>();
 
-      // Process new posts
+      // split posts into parents (top-level posts) and orphans (posts whose parent is missing)
       const { parents, orphans } = newPosts.reduce((acc, post) => {
+        // parent
         if (!post.parent_id) {
           acc.parents.push(post);
+          // orphan
         } else if (!existingParents.has(post.parent_id) && !newPostsMap.has(post.parent_id)) {
           acc.orphans.push(post);
         } else {
+          // reply gets grouped w/ siblings
           const parentId = post.parent_id;
           newChildren.set(parentId, [...(newChildren.get(parentId) || []), post]);
         }
         return acc;
       }, { parents: [] as posts_new[], orphans: [] as posts_new[] });
 
-      // Create new state
+      // stitch back into final thread structure
       const newThreads = [
+        // update existing threads w/ new replies
         ...currentData.threads.map(t => ({
           ...t,
           children: [...t.children, ...(newChildren.get(t.parent.id) || [])]

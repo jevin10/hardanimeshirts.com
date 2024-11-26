@@ -1,6 +1,12 @@
 import type { posts_new } from "@prisma/client";
 
-export class Thread {
+export interface ThreadProps {
+  parent: posts_new;
+  children: posts_new[];
+  locked: boolean;
+}
+
+export class Thread implements ThreadProps {
   parent: posts_new;
   children: posts_new[] = $state([]);
   locked: boolean = $state(false);

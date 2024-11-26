@@ -74,7 +74,7 @@
     </div>
   </div>
   <div class="mt-2 w-full max-w-3xl">
-    <div class="p-4">
+    <div class="mx-5">
       <LatestPosts posts={latestPosts} />
     </div>
   </div>

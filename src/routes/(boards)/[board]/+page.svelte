@@ -6,6 +6,7 @@
   import { onMount } from 'svelte';
   import { getImageboardState } from '$lib/client/imageboard/Imageboard.svelte';
   import Content from '$lib/components/imageboard/post/Content.svelte';
+  import Thread from '$lib/components/imageboard/Thread.svelte';
 
   const wsStore = getWsStore();
   const postsStore = getPostsStore();
@@ -47,10 +48,20 @@
   }
 </script>
 
-{#if boardId === null}
-  <p>Invalid board</p>
-{:else if imageboardState.activeBoard?.threads}
-  {#each imageboardState.activeBoard.threads as thread}
-    <Content post={thread.parent} />
-  {/each}
-{/if}
+<div class="w-full flex flex-col">
+  <div class="mx-3">
+    {#if boardId === null}
+      <p>Invalid board</p>
+    {:else if imageboardState.activeBoard?.threads}
+      {#if imageboardState.activeBoard.threads.length > 0}
+        {#each imageboardState.activeBoard.threads as thread}
+          <Thread parent={thread.parent} children={thread.children} locked={thread.locked} />
+        {/each}
+      {:else}
+        <div class="my-5">populating threads...</div>
+      {/if}
+    {:else}
+      <div class="my-5">starting imageboard...</div>
+    {/if}
+  </div>
+</div>

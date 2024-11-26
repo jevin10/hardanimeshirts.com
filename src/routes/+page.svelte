@@ -33,11 +33,6 @@
     return sortedPosts;
   });
 
-  // Add effect to track latestPosts changes
-  $effect(() => {
-    console.log('latestPosts changed:', latestPosts);
-  });
-
   function test() {
     wsStore.send({
       domain: 'imageboard',

@@ -19,10 +19,10 @@
           <Thread parent={thread.parent} children={thread.children} locked={thread.locked} />
         {/each}
       {:else}
-        <div class="my-5">populating threads...</div>
+        <div class="my-5"><span class="text-bold">Loading</span> | Getting Threads...</div>
       {/if}
     {:else}
-      <div class="my-5">starting imageboard...</div>
+      <div class="my-5"><span class="text-bold">Loading</span> | Starting Imageboard Client...</div>
     {/if}
   </div>
 </div>

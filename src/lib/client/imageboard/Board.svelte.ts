@@ -1,4 +1,3 @@
-import type { boards } from "@prisma/client";
 import type { Thread } from "./Thread.svelte";
 
 export class Board {
@@ -14,7 +13,7 @@ export class Board {
   addThread(thread: Thread, position: 'front' | 'back') {
     // Check for duplicate based on thread parent id
     if (this.threads.some(t => t.parent.id === thread.parent.id)) {
-      throw new Error(`Thread with id ${thread.parent.id} already exists on this board`);
+      return;
     }
 
     switch (position) {
@@ -27,7 +26,7 @@ export class Board {
     }
   }
 
-  getThread(threadId: number) {
+  getThread(threadId: number): Thread | undefined {
     return this.threads.find(t => t.parent.id === threadId);
   }
 }

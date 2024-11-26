@@ -4,6 +4,7 @@ import type { WebSocketStore } from '$lib/stores/websocket';
 import type { PostsStore } from "$lib/stores/posts";
 import type { posts_new } from "@prisma/client";
 import type { ImageboardServerAction } from "$lib/types/ws/actions/imageboard";
+import type { Imageboard } from "$lib/client/imageboard/Imageboard.svelte";
 
 // Custom error class for domain-specific errors
 export class ImageboardHandlerError extends Error {
@@ -19,14 +20,16 @@ export class ImageboardHandlerError extends Error {
 
 export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage> {
   private postsStore?: PostsStore;
+  private imageboardState?: Imageboard;
   private logger: Console;
 
   constructor(logger: Console = console) {
     this.logger = logger;
   }
 
-  init(deps: { postsStore: PostsStore }) {
+  init(deps: { postsStore: PostsStore, imageboardState: Imageboard }) {
     this.postsStore = deps.postsStore;
+    this.imageboardState = deps.imageboardState;
   }
 
   async handle(message: ImageboardMessage): Promise<void | ImageboardMessage> {
@@ -99,6 +102,7 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
     }
 
     try {
+      await this.imageboardState!.addPosts(params.posts);
       this.postsStore!.add(params.posts);
     } catch (error) {
       throw new ImageboardHandlerError(

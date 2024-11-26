@@ -2,6 +2,7 @@ import type { BaseWSMessage } from "$lib/types/ws/messages/base";
 import type DomainHandler from "$lib/shared/DomainHandler";
 import { ImageboardDomainHandler } from "./domains/imageboard/ImageboardDomainHandler.svelte";
 import type { PostsStore } from "$lib/stores/posts";
+import type { Imageboard } from "../imageboard/Imageboard.svelte";
 
 export class HandlerInitializationError extends Error {
   constructor(domain: string, cause?: Error) {
@@ -28,6 +29,7 @@ export class UnknownDomainError extends Error {
 
 interface MessageProcessorDeps {
   postsStore: PostsStore;
+  imageboardState: Imageboard;
 }
 
 export class MessageProcessor {

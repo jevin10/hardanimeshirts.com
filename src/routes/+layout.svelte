@@ -12,7 +12,7 @@
   const postsStore: PostsStore = setPostsStore();
   const wsStore: WebSocketStore = setWsStore();
   const imageboardState: Imageboard = setImageboardState();
-  const wsClient = WebSocketClient.initialize(postsStore, wsStore);
+  const wsClient = WebSocketClient.initialize(postsStore, wsStore, imageboardState);
 
   let { children } = $props();
 

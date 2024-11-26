@@ -3,22 +3,25 @@ import { writable } from 'svelte/store';
 import { MessageProcessor } from './MessageProcessor';
 import type { PostsStore } from '$lib/stores/posts';
 import type { WebSocketStore } from '$lib/stores/websocket';
+import { getImageboardState, type Imageboard } from '../imageboard/Imageboard.svelte';
 
 export class WebSocketClient {
   private static instance: WebSocketClient;
   private messageProcessor: MessageProcessor;
+  private imageboardState: Imageboard;
   private postsStore: PostsStore;
   private wsStore: WebSocketStore;
 
-  private constructor(postsStore: PostsStore, wsStore: WebSocketStore) {
+  private constructor(postsStore: PostsStore, wsStore: WebSocketStore, imageboardState: Imageboard) {
     this.postsStore = postsStore;
     this.wsStore = wsStore;
-    this.messageProcessor = MessageProcessor.getInstance({ postsStore });
+    this.imageboardState = imageboardState;
+    this.messageProcessor = MessageProcessor.getInstance({ postsStore, imageboardState });
   }
 
-  public static initialize(postsStore: PostsStore, wsStore: WebSocketStore): WebSocketClient {
+  public static initialize(postsStore: PostsStore, wsStore: WebSocketStore, imageboardState: Imageboard): WebSocketClient {
     if (!WebSocketClient.instance) {
-      WebSocketClient.instance = new WebSocketClient(postsStore, wsStore);
+      WebSocketClient.instance = new WebSocketClient(postsStore, wsStore, imageboardState);
     }
     return WebSocketClient.instance;
   }

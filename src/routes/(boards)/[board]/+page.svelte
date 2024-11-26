@@ -5,6 +5,7 @@
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import { getImageboardState } from '$lib/client/imageboard/Imageboard.svelte';
+  import Content from '$lib/components/imageboard/post/Content.svelte';
 
   const wsStore = getWsStore();
   const postsStore = getPostsStore();
@@ -16,14 +17,24 @@
   // Convert board name to ID
   const boardId = $derived(BoardService.getBoardId(boardName));
 
-  // Request content on mount
-  onMount(() => {
+  let connected = $state(false);
+
+  const unsubscribe = wsStore.subscribe((state) => {
+    connected = state.connected;
+  });
+
+  // Set active board whenever boardId changes
+  $effect(() => {
     if (boardId !== null) {
-      requestBoardContent();
+      imageboardState.setActiveBoard(boardId);
+      if (connected) {
+        requestBoardContent();
+      }
     }
   });
 
   function requestBoardContent() {
+    console.log('requesting content');
     wsStore.send({
       domain: 'imageboard',
       action: 'request_content',
@@ -38,6 +49,8 @@
 
 {#if boardId === null}
   <p>Invalid board</p>
-{:else}
-  <!-- Your board content here -->
+{:else if imageboardState.activeBoard?.threads}
+  {#each imageboardState.activeBoard.threads as thread}
+    <Content post={thread.parent} />
+  {/each}
 {/if}

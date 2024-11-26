@@ -4,6 +4,7 @@
   import { getPostsStore } from '$lib/stores/posts';
   import type { posts_new } from '@prisma/client';
   import LatestPosts from './components/LatestPosts.svelte';
+  import { getImageboardState } from '$lib/client/imageboard/Imageboard.svelte';
 
   const wsStore = getWsStore();
   const postsStore = getPostsStore();

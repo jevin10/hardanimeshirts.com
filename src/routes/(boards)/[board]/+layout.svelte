@@ -8,8 +8,10 @@
   import PageTitle from '$lib/components/Heading/PageTitle.svelte';
   import Banner from '$lib/components/Heading/Banner.svelte';
 
-  let { children } = $props();
+  // Track which boards have been initialized
+  const initializedBoards = $state(new Set<number>());
 
+  let { children } = $props();
   const wsStore = getWsStore();
   const imageboardState = getImageboardState();
 
@@ -23,17 +25,19 @@
   let connected = $state(false);
   wsStore.subscribe((state) => (connected = state.connected));
 
-  // updates boardContext
+  // Updates boardContext when URL param changes
   $effect(() => {
     boardContext.name = $page.params.board;
     boardContext.id = BoardService.getBoardId($page.params.board);
   });
 
-  // updates activeBoard
+  // Handle board initialization and active board updates
   $effect(() => {
     if (boardContext.id !== null) {
       imageboardState.setActiveBoard(boardContext.id);
-      if (connected) {
+
+      // Only request content if board hasn't been initialized and we're connected
+      if (connected && !initializedBoards.has(boardContext.id)) {
         wsStore.send({
           domain: 'imageboard',
           action: 'request_content',
@@ -43,6 +47,7 @@
             limit: 5
           }
         });
+        initializedBoards.add(boardContext.id);
       }
     }
   });
@@ -63,6 +68,7 @@
   } as const;
 
   const pageTitle = $derived(titleMap[boardContext.name as keyof typeof titleMap]?.title ?? '');
+
   const pageSubtitle = $derived(
     titleMap[boardContext.name as keyof typeof titleMap]?.subtitle ?? ''
   );

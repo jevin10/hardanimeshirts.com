@@ -59,11 +59,11 @@
     },
     seams: {
       title: '/s/ - seams',
-      subtitle: 'The body is obsolete. Your garments are your shell.'
+      subtitle: 'Identity is a garment waiting to be worn.'
     },
     adventures: {
       title: '/a/ - adventures',
-      subtitle: 'Acceleration without destination!'
+      subtitle: 'Acceleration without destination.'
     }
   } as const;
 
@@ -80,4 +80,9 @@
     <PageTitle title={pageTitle} subtitle={pageSubtitle} />
   </div>
 {/if}
+<div class="mt-5 px-2 mx-3 border border-black dark:border-white">
+  <button>[catalog]</button>
+  <button>[sort]</button>
+  <button>[new post]</button>
+</div>
 {@render children()}

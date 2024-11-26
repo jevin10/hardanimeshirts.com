@@ -98,7 +98,7 @@ export class Imageboard {
 
       // Add thread to board
       try {
-        board.addThread(thread, 'front');
+        board.addThread(thread);
       } catch (e) {
         console.warn(`Failed to add thread ${parentPost.id} to board ${boardId}:`, e);
       }

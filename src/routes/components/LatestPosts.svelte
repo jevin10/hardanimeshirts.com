@@ -35,7 +35,11 @@
 
 <div class="flex flex-row justify-between items-end">
   <div class="text-3xl">Latest Posts</div>
-  {#if !isLoading}
+  {#if isLoading}
+    <div class="text-sm">
+      <a href="/">loading thread</a>
+    </div>
+  {:else if !isLoading}
     <div class="text-sm">
       <a href="/{boardName}/{post.parent_id ?? post.id}">view full thread</a>
     </div>

@@ -3,10 +3,97 @@
   import { getImageboardState } from '$lib/client/imageboard/Imageboard.svelte';
   import Thread from '$lib/components/imageboard/Thread.svelte';
   import type { BoardContext } from '$lib/types/imageboard';
+  import { getWsStore } from '$lib/stores/websocket';
 
   const imageboardState = getImageboardState();
-
   const boardContext: BoardContext = getContext('BOARD_CTX');
+  const wsStore = getWsStore();
+
+  let isLoading = $state(false);
+  let hasMore = $state(true);
+  let bottomElement = $state<HTMLDivElement | null>(null);
+  let currentObserver: IntersectionObserver | null = null;
+
+  function loadMoreThreads() {
+    if (isLoading || !hasMore || boardContext.id === null || !imageboardState.activeBoard) return;
+
+    isLoading = true;
+    wsStore.send({
+      domain: 'imageboard',
+      action: 'request_content',
+      data: {
+        boardId: boardContext.id,
+        page: Math.floor(imageboardState.activeBoard.threads.length / 5) + 1,
+        limit: 5
+      }
+    });
+  }
+
+  // observer for infinite loading on scroll
+  function setupObserver() {
+    if (currentObserver) {
+      currentObserver.disconnect();
+    }
+
+    currentObserver = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (first.isIntersecting && hasMore && !isLoading) {
+          loadMoreThreads();
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '200px'
+      }
+    );
+
+    if (bottomElement) {
+      currentObserver.observe(bottomElement);
+    }
+  }
+
+  function initializeState() {
+    isLoading = false;
+    hasMore = true;
+    setupObserver();
+  }
+
+  // Single effect to handle thread updates
+  $effect(() => {
+    const threads = imageboardState.activeBoard?.threads;
+    if (threads) {
+      isLoading = false;
+      if (threads.length % 5 !== 0) {
+        hasMore = false;
+      }
+    }
+  });
+
+  // Effect to handle board changes
+  $effect(() => {
+    if (boardContext.id !== null) {
+      initializeState();
+    }
+  });
+
+  // Effect to handle bottom element changes
+  $effect(() => {
+    if (bottomElement) {
+      setupObserver();
+    }
+  });
+
+  // Initialize on mount/reload
+  onMount(() => {
+    initializeState();
+
+    return () => {
+      if (currentObserver) {
+        currentObserver.disconnect();
+      }
+    };
+  });
 </script>
 
 <div class="w-full flex flex-col">
@@ -18,11 +105,17 @@
         {#each imageboardState.activeBoard.threads as thread}
           <Thread parent={thread.parent} children={thread.children} locked={thread.locked} />
         {/each}
+        <!-- Loading indicator -->
+        {#if isLoading}
+          <div class="my-5"><span class="font-bold">Loading</span> | Getting more threads...</div>
+        {/if}
+        <!-- Intersection observer target -->
+        <div bind:this={bottomElement} class="h-px"></div>
       {:else}
-        <div class="my-5"><span class="text-bold">Loading</span> | Getting Threads...</div>
+        <div class="my-5"><span class="font-bold">Loading</span> | Getting Threads...</div>
       {/if}
     {:else}
-      <div class="my-5"><span class="text-bold">Loading</span> | Starting Imageboard Client...</div>
+      <div class="my-5"><span class="font-bold">Loading</span> | Starting Imageboard Client...</div>
     {/if}
   </div>
 </div>

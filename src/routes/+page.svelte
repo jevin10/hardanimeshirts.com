@@ -5,6 +5,7 @@
   import type { posts_new } from '@prisma/client';
   import LatestPosts from './components/LatestPosts.svelte';
   import { getImageboardState } from '$lib/client/imageboard/Imageboard.svelte';
+  import Stage from './components/Stage.svelte';
 
   const wsStore = getWsStore();
   const postsStore = getPostsStore();
@@ -69,8 +70,13 @@
     </div>
   </div>
   <div class="mt-2 w-full max-w-3xl">
-    <div class="mx-5">
-      <LatestPosts posts={latestPosts} />
+    <div class="mx-5 space-y-5">
+      <div>
+        <LatestPosts posts={latestPosts} />
+      </div>
+      <div>
+        <Stage />
+      </div>
     </div>
   </div>
 </div>

@@ -38,7 +38,7 @@
   html {
     @apply font-times text-black dark:text-white bg-white dark:bg-black ;
   }
-  a {
+  .link {
     @apply text-black dark:text-white hover:text-gray-500 underline decoration-dotted;
   }
   .nav-link {

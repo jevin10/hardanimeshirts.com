@@ -3,7 +3,7 @@
   import { getWsStore } from '$lib/stores/websocket';
   import { page } from '$app/stores';
   import { BoardService } from '$lib/client/imageboard/BoardService';
-  import { setContext } from 'svelte';
+  import { onMount, setContext } from 'svelte';
   import type { BoardContext } from '$lib/types/imageboard';
   import PageTitle from '$lib/components/Heading/PageTitle.svelte';
   import Banner from '$lib/components/Heading/Banner.svelte';
@@ -19,6 +19,27 @@
     name: $page.params.board,
     id: BoardService.getBoardId($page.params.board)
   });
+
+  const titleMap = {
+    void: {
+      title: '/v/ - void',
+      subtitle: 'Reality has always been virtual.'
+    },
+    seams: {
+      title: '/s/ - seams',
+      subtitle: 'Identity is a garment waiting to be worn.'
+    },
+    adventures: {
+      title: '/a/ - adventures',
+      subtitle: 'Acceleration without destination.'
+    }
+  } as const;
+
+  const pageTitle = $derived(titleMap[boardContext.name as keyof typeof titleMap]?.title ?? '');
+
+  const pageSubtitle = $derived(
+    titleMap[boardContext.name as keyof typeof titleMap]?.subtitle ?? ''
+  );
 
   setContext('BOARD_CTX', boardContext);
 
@@ -52,26 +73,9 @@
     }
   });
 
-  const titleMap = {
-    void: {
-      title: '/v/ - void',
-      subtitle: 'Reality has always been virtual.'
-    },
-    seams: {
-      title: '/s/ - seams',
-      subtitle: 'Identity is a garment waiting to be worn.'
-    },
-    adventures: {
-      title: '/a/ - adventures',
-      subtitle: 'Acceleration without destination.'
-    }
-  } as const;
-
-  const pageTitle = $derived(titleMap[boardContext.name as keyof typeof titleMap]?.title ?? '');
-
-  const pageSubtitle = $derived(
-    titleMap[boardContext.name as keyof typeof titleMap]?.subtitle ?? ''
-  );
+  onMount(() => {
+    imageboardState.setActiveBoard(boardContext.id);
+  });
 </script>
 
 {#if boardContext.name}
@@ -80,8 +84,4 @@
     <PageTitle title={pageTitle} subtitle={pageSubtitle} />
   </div>
 {/if}
-<div class="mt-5 px-2 mx-3 border border-black dark:border-white">
-  <button>[catalog]</button>
-  <button>[new post]</button>
-</div>
 {@render children()}

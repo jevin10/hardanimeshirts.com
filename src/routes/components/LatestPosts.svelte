@@ -2,6 +2,7 @@
   import Content from '$lib/components/imageboard/post/Content.svelte';
   import { BoardService } from '$lib/client/imageboard/BoardService';
   import type { posts_new } from '@prisma/client';
+  import { goto } from '$app/navigation';
 
   const placeholder: posts_new[] = [
     {
@@ -37,11 +38,16 @@
   <div class="text-3xl">Latest Posts</div>
   {#if isLoading}
     <div class="text-sm">
-      <a href="/">loading thread</a>
+      <button>loading thread</button>
     </div>
   {:else if !isLoading}
     <div class="text-sm">
-      <a href="/{boardName}/{post.parent_id ?? post.id}">view full thread</a>
+      <button
+        class="link"
+        onclick={() => {
+          goto(`/${boardName}/${post.parent_id ?? post.id}`);
+        }}>view full thread</button
+      >
     </div>
   {/if}
 </div>
@@ -81,7 +87,15 @@
   </div>
   {#if !isLoading && boardName}
     <div class="text-sm">
-      as discovered in <a href="/{boardName}" class="">/{boardName}/</a>
+      as discovered in
+      <button
+        onclick={() => {
+          goto(`/${boardName}`);
+        }}
+        class="link"
+      >
+        /{boardName}/
+      </button>
     </div>
   {/if}
 </div>

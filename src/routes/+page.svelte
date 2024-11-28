@@ -70,12 +70,12 @@
     </div>
   </div>
   <div class="mt-2 w-full max-w-3xl">
-    <div class="mx-5 space-y-5">
-      <div>
-        <LatestPosts posts={latestPosts} />
-      </div>
+    <div class="mx-5 space-y-2">
       <div>
         <Stage />
+      </div>
+      <div>
+        <LatestPosts posts={latestPosts} />
       </div>
     </div>
   </div>

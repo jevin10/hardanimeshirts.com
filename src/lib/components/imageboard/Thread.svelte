@@ -5,7 +5,7 @@
   let { parent, children, locked }: ThreadProps = $props();
 </script>
 
-<div class="my-5 border-black dark:border-white border-l px-3">
+<div class="border-black dark:border-white border-l-2 px-3">
   <div class="mb-2">
     <Content post={parent} />
   </div>

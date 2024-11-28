@@ -4,6 +4,7 @@
   import Thread from '$lib/components/imageboard/Thread.svelte';
   import type { BoardContext } from '$lib/types/imageboard';
   import { getWsStore } from '$lib/stores/websocket';
+  import { goto } from '$app/navigation';
 
   const imageboardState = getImageboardState();
   const boardContext: BoardContext = getContext('BOARD_CTX');
@@ -59,7 +60,7 @@
     setupObserver();
   }
 
-  // Single effect to handle thread updates
+  // Effect to handle thread updates
   $effect(() => {
     const threads = imageboardState.activeBoard?.threads;
     if (threads) {
@@ -96,15 +97,36 @@
   });
 </script>
 
+<div class="mt-5 px-2 mx-3 border border-black dark:border-white">
+  <button
+    onclick={() => {
+      goto(`/`);
+    }}>[home]</button
+  >
+  <button>[new post]</button>
+</div>
+
 <div class="w-full flex flex-col">
   <div class="mx-3">
     {#if boardContext.id === null}
       <p>Invalid board</p>
     {:else if imageboardState.activeBoard?.threads}
       {#if imageboardState.activeBoard.threads.length > 0}
-        {#each imageboardState.activeBoard.threads as thread}
-          <Thread parent={thread.parent} children={thread.children} locked={thread.locked} />
-        {/each}
+        <div class="mt-2">
+          <div class="my-5 italic">click threads to enter them</div>
+          {#each imageboardState.activeBoard.threads as thread}
+            <div class="mt-5">
+              <button
+                onclick={() => {
+                  goto(`/${boardContext.name}/${thread.parent.id}`);
+                }}
+                class="w-full text-left hover:border-l-4 border-black dark:border-white hover:bg-gray-50 dark:hover:bg-zinc-950 transition-colors"
+              >
+                <Thread parent={thread.parent} children={thread.children} locked={thread.locked} />
+              </button>
+            </div>
+          {/each}
+        </div>
         <!-- Loading indicator -->
         {#if isLoading}
           <div class="my-5"><span class="font-bold">Loading</span> | Getting more threads...</div>

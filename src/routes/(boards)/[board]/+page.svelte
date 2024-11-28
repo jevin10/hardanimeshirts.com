@@ -5,6 +5,7 @@
   import type { BoardContext } from '$lib/types/imageboard';
   import { getWsStore } from '$lib/stores/websocket';
   import { goto } from '$app/navigation';
+  import PostForm from './components/PostForm.svelte';
 
   const imageboardState = getImageboardState();
   const boardContext: BoardContext = getContext('BOARD_CTX');
@@ -113,7 +114,11 @@
     {:else if imageboardState.activeBoard?.threads}
       {#if imageboardState.activeBoard.threads.length > 0}
         <div class="mt-2">
-          <div class="my-5 italic">click threads to enter them</div>
+          <div class="my-5">
+            {#if boardContext.name}
+              <PostForm boardId={boardContext.id} boardName={boardContext.name} />
+            {/if}
+          </div>
           {#each imageboardState.activeBoard.threads as thread}
             <div class="mt-5">
               <button

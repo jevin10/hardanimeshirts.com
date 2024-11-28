@@ -50,7 +50,7 @@
       locked={imageboardState.activeThread.locked}
     />
     <div class="mt-2">
-      <div class="text-xl">Reply</div>
+      <div class="text-xl">New Reply</div>
       <div>
         <button>[attach image]</button>
       </div>
@@ -59,9 +59,9 @@
         rows="5"
         spellcheck="false"
       ></textarea>
-      <div class="w-full md:w-[40rem] flex justify-between">
-        <button>[preview]</button>
+      <div class="w-full md:w-[40rem] flex justify-start gap-1">
         <button>[submit]</button>
+        <button>[preview]</button>
       </div>
     </div>
   {:else}

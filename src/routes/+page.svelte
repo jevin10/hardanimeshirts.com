@@ -6,9 +6,21 @@
   import LatestPosts from './components/LatestPosts.svelte';
   import { getImageboardState } from '$lib/client/imageboard/Imageboard.svelte';
   import Stage from './components/Stage.svelte';
+  import { onMount } from 'svelte';
 
   const wsStore = getWsStore();
   const postsStore = getPostsStore();
+
+  console.log('sending request');
+  wsStore.send({
+    domain: 'imageboard',
+    action: 'request_content',
+    data: {
+      boardId: null,
+      page: 1,
+      limit: 5
+    }
+  });
 
   let latestPosts = $derived.by(() => {
     const allPosts: posts_new[] = [];
@@ -33,18 +45,6 @@
 
     return sortedPosts;
   });
-
-  function test() {
-    wsStore.send({
-      domain: 'imageboard',
-      action: 'request_content',
-      data: {
-        boardId: null,
-        page: 1,
-        limit: 5
-      }
-    });
-  }
 </script>
 
 <svelte:head>

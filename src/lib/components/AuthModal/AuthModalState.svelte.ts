@@ -1,7 +1,7 @@
 import { getContext, setContext } from "svelte";
 
 export class AuthModalState {
-  isVisible: boolean = $state(true);
+  isVisible: boolean = $state(false);
   loginForm: {
     username: string;
     password: string;

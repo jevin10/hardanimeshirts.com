@@ -3,10 +3,14 @@
   import { getWsStore } from '$lib/stores/websocket';
   import { goto } from '$app/navigation';
   import { getAuthModalState } from '../AuthModal/AuthModalState.svelte';
+  import { getContext } from 'svelte';
+  import type { User } from '@prisma/client';
 
   const wsStore = getWsStore();
   const authModalState = getAuthModalState();
   let connected = $state(false);
+
+  let user: User | null = getContext('USER_CTX');
 
   $effect(() => {
     const unsubscribe = wsStore.subscribe((state) => {
@@ -79,15 +83,19 @@
       {/if}
     </div>
     <div>
-      You are browsing as a guest.
-      <button
-        class="link"
-        onclick={() => {
-          authModalState.openModal();
-        }}
-      >
-        Sign in
-      </button>
+      {#if user}
+        You are browsing as <button class="link">{user.username}</button>
+      {:else}
+        You are browsing as a guest. |
+        <button
+          class="link"
+          onclick={() => {
+            authModalState.openModal();
+          }}
+        >
+          Sign in
+        </button>
+      {/if}
     </div>
   </div>
 </div>

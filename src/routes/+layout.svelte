@@ -6,18 +6,21 @@
   import Modal from '$lib/components/AuthModal/Modal.svelte';
   import { setPostsStore, type PostsStore } from '$lib/stores/posts';
   import { WebSocketClient } from '$lib/client/ws/WebSocketClient';
-  import { onDestroy, onMount, setContext } from 'svelte';
+  import { onDestroy, onMount, setContext, type Snippet } from 'svelte';
   import { setImageboardState, type Imageboard } from '$lib/client/imageboard/Imageboard.svelte';
   import { setAuthModalState } from '$lib/components/AuthModal/AuthModalState.svelte';
+  import type { LayoutData } from './$types';
+
+  let { children, data }: { children: Snippet; data: LayoutData } = $props();
 
   const postsStore: PostsStore = setPostsStore();
   const wsStore: WebSocketStore = setWsStore();
   const imageboardState: Imageboard = setImageboardState();
-  const wsClient = WebSocketClient.initialize(postsStore, wsStore, imageboardState);
+  WebSocketClient.initialize(postsStore, wsStore, imageboardState);
+  setAuthModalState();
 
-  const authModalState = setAuthModalState();
+  setContext('USER_CTX', data.user);
 
-  let { children } = $props();
   let connected = $state(false);
   let connectionState = $state<'connecting' | 'connected' | 'ready'>('connecting');
   let messages = $state<any[]>([]);

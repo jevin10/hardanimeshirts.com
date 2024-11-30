@@ -40,7 +40,7 @@ function createWebSocketStore(): WebSocketStore {
         data: {
           boardId: null,
           page: 1,
-          limit: 5
+          limit: 3
         }
       });
       console.log('[websocket] connection open');

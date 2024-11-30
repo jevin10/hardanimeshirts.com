@@ -66,6 +66,7 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
   }
 
   private async fetchPosts(params: RequestContentPayload): Promise<posts_new[]> {
+    console.log('fetching posts');
     return await imageboardService.getContent(
       params.boardId,
       params.page,

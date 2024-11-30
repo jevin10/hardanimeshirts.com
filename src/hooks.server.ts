@@ -123,7 +123,7 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 
 // Combine middleware in sequence
 export const handle = sequence(
+  handleAuthentication,
   initializeWebSocketServer,
   handleApiRoutes,
-  handleAuthentication
 );

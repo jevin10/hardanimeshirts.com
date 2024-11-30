@@ -1,7 +1,7 @@
 import { lucia } from "$lib/server/auth";
 import type { Handle } from "@sveltejs/kit";
 import { building } from '$app/environment';
-import { GlobalThisWSS, WebSocketManager, type ExtendedGlobal } from "$lib/server/ws/WebSocketServer";
+import { GlobalThisWSS, type ExtendedGlobal } from "$lib/server/ws/WebSocketServer";
 import { sequence } from "@sveltejs/kit/hooks";
 import { WebSocketConnection } from "$lib/server/ws/WebSocketConnection";
 
@@ -13,6 +13,8 @@ const initializeWebSocketServer: Handle = async ({ event, resolve }) => {
     const wss = (globalThis as ExtendedGlobal)[GlobalThisWSS];
     if (wss !== undefined) {
       wss.on('connection', (ws, req) => {
+        // get cookies
+        // validate, send auth/user status to websocketconnection
         console.log(`[wss:kit] client connected`);
         new WebSocketConnection(ws, req);
       });

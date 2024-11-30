@@ -36,13 +36,22 @@
 
 @layer base {
   html {
-    @apply font-times text-black dark:text-white bg-white dark:bg-black ;
+    @apply font-times text-black dark:text-white bg-white dark:bg-black;
+  }
+  input {
+    @apply bg-white/50 dark:bg-black/50 border border-black dark:border-white;
   }
   .link {
     @apply text-black dark:text-white hover:text-gray-500 underline decoration-dotted;
   }
   .nav-link {
     @apply no-underline;
+  }
+  .overlay {
+    @apply fixed z-40 w-full h-full top-0 left-0 flex justify-center items-center bg-black/30;
+  }
+  .modal {
+    @apply bg-white/70 dark:bg-black/50 backdrop-blur border border-black dark:border-white flex justify-center items-center shadow-lg;
   }
 }
 

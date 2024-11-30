@@ -3,15 +3,19 @@
   import { getWsStore, setWsStore, type WebSocketStore } from '$lib/stores/websocket';
   import { browser } from '$app/environment';
   import NavigationBar from '$lib/components/NavigationBar/NavigationBar.svelte';
+  import Modal from '$lib/components/AuthModal/Modal.svelte';
   import { setPostsStore, type PostsStore } from '$lib/stores/posts';
   import { WebSocketClient } from '$lib/client/ws/WebSocketClient';
-  import { onDestroy, onMount } from 'svelte';
+  import { onDestroy, onMount, setContext } from 'svelte';
   import { setImageboardState, type Imageboard } from '$lib/client/imageboard/Imageboard.svelte';
+  import { setAuthModalState } from '$lib/components/AuthModal/AuthModalState.svelte';
 
   const postsStore: PostsStore = setPostsStore();
   const wsStore: WebSocketStore = setWsStore();
   const imageboardState: Imageboard = setImageboardState();
   const wsClient = WebSocketClient.initialize(postsStore, wsStore, imageboardState);
+
+  const authModalState = setAuthModalState();
 
   let { children } = $props();
   let connected = $state(false);
@@ -46,6 +50,7 @@
 <div class="h-screen">
   {#if connectionState === 'ready'}
     <main class="h-full">
+      <Modal />
       <NavigationBar />
       {@render children()}
     </main>

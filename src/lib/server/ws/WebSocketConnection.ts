@@ -3,6 +3,7 @@ import { WebSocket } from 'ws';
 import type { IncomingMessage } from 'http';
 import type { BaseWSMessage } from '$lib/types/ws/messages/base';
 import { MessageProcessor } from './MessageProcessor';
+import { lucia } from '../auth';
 
 // Represents a single live connection between client and server
 // On authentication, the connection gets upgraded and associated with a userId

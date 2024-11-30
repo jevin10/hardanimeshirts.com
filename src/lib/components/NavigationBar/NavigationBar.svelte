@@ -2,8 +2,10 @@
   import { page } from '$app/stores';
   import { getWsStore } from '$lib/stores/websocket';
   import { goto } from '$app/navigation';
+  import { getAuthModalState } from '../AuthModal/AuthModalState.svelte';
 
   const wsStore = getWsStore();
+  const authModalState = getAuthModalState();
   let connected = $state(false);
 
   $effect(() => {
@@ -67,12 +69,25 @@
       </button>
     </div>
   </nav>
-  <div class="pt-1 px-1 text-xs flex justify-start bg-white dark:bg-black">
-    <span class="mr-1">server | </span>
-    {#if connected}
-      <span class="text-green-500 dark:text-green-400">■ connected</span>
-    {:else}
-      <span class="text-red-500 dark:text-red-400">■ connecting...</span>
-    {/if}
+  <div class="flex flex-row justify-between pt-1 px-1 text-xs bg-white dark:bg-black">
+    <div class="flex justify-start">
+      <span class="mr-1">server | </span>
+      {#if connected}
+        <span class="text-green-500 dark:text-green-400">■ connected</span>
+      {:else}
+        <span class="text-red-500 dark:text-red-400">■ connecting...</span>
+      {/if}
+    </div>
+    <div>
+      You are browsing as a guest.
+      <button
+        class="link"
+        onclick={() => {
+          authModalState.openModal();
+        }}
+      >
+        Sign in
+      </button>
+    </div>
   </div>
 </div>

@@ -128,6 +128,7 @@
         <div class="text-m">Authenticate | {display}</div>
         <button
           onclick={() => {
+            errorMessage = '';
             authModalState.closeModal();
           }}>[x]</button
         >

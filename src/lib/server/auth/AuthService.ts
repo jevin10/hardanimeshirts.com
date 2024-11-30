@@ -1,7 +1,17 @@
 import { loginSchema, signupSchema, type LoginInput, type SignupInput } from "$lib/types/auth/inputs";
 
 export class AuthService {
-  constructor() { }
+  private static instance: AuthService;
+
+  private constructor() { }
+
+  public static getInstance(): AuthService {
+    if (!AuthService.instance) {
+      AuthService.instance = new AuthService();
+      console.log('[Authentication] Creating new AuthService');
+    }
+    return AuthService.instance;
+  }
 
   async login(input: LoginInput): Promise<void> {
     // Validate input

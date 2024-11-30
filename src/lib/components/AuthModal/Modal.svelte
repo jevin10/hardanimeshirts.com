@@ -8,6 +8,15 @@
   const authModalState = getAuthModalState();
 
   let { display = 'Login' }: Props = $props();
+
+  async function handleLoginSubmit() {
+    try {
+      await authModalState.submitLogin();
+      // Handle success (e.g. show notification)
+    } catch (err) {
+      // Handle error (e.g. show error message)
+    }
+  }
 </script>
 
 {#snippet login()}
@@ -17,8 +26,16 @@
       <div class="text-m">Welcome back. We all missed you :3</div>
     </div>
     <div class="my-5 flex flex-col gap-2">
-      <input class="w-full text-lg px-2 placeholder:text-gray-500" placeholder="username" />
-      <input class="w-full text-lg px-2 placeholder:text-gray-500" placeholder="password" />
+      <input
+        bind:value={authModalState.loginForm.username}
+        class="w-full text-lg px-2 placeholder:text-gray-500"
+        placeholder="username"
+      />
+      <input
+        bind:value={authModalState.loginForm.password}
+        class="w-full text-lg px-2 placeholder:text-gray-500"
+        placeholder="password"
+      />
     </div>
     <div class="my-5">
       <div class="text-m">
@@ -34,7 +51,7 @@
       </div>
     </div>
     <div class="my-10 flex justify-center">
-      <button class="text-2xl">[login]</button>
+      <button class="text-2xl" onclick={handleLoginSubmit}>[login]</button>
     </div>
     <div class="my-5 flex justify-center text-center">
       <div class="text-xs">

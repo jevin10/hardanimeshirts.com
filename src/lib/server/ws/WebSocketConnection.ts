@@ -12,11 +12,11 @@ export class WebSocketConnection {
   private ws: WebSocket;
   private messageProcessor: MessageProcessor;
 
-  constructor(ws: WebSocket, req: IncomingMessage, messageProcessor: MessageProcessor) {
+  constructor(ws: WebSocket, req: IncomingMessage) {
     this.socketId = nanoid();
     this.userId = null;
     this.ws = ws;
-    this.messageProcessor = messageProcessor;
+    this.messageProcessor = new MessageProcessor();
     this.initialize();
   }
 

@@ -2,8 +2,6 @@ import { WebSocketServer } from 'ws';
 import { parse } from 'url';
 import type { IncomingMessage } from 'http';
 import type { Duplex } from 'stream';
-import { WebSocketConnection } from './WebSocketConnection';
-import { MessageProcessor } from './MessageProcessor';
 
 export const GlobalThisWSS = Symbol.for('sveltekit.wss');
 
@@ -18,11 +16,10 @@ export type ExtendedGlobal = typeof globalThis & {
 export class WebSocketManager {
   private static instance: WebSocketManager;
   private wss: ExtendedWebSocketServer;
-  private messageProcessor: MessageProcessor;
 
   private constructor() {
-    this.wss = new WebSocketServer({ noServer: true });
-    this.messageProcessor = new MessageProcessor();
+    this.wss = new WebSocketServer({ noServer: true }) as ExtendedWebSocketServer;
+    this.initialize();
     this.setupEventHandlers();
   }
 
@@ -46,7 +43,7 @@ export class WebSocketManager {
 
   private setupEventHandlers(): void {
     this.wss.on('connection', (ws, req) => {
-      new WebSocketConnection(ws, req, this.messageProcessor);
+      console.log(`[wss:global] client connected`);
     });
   }
 

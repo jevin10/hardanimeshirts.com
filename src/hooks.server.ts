@@ -3,15 +3,21 @@ import type { Handle } from "@sveltejs/kit";
 import { building } from '$app/environment';
 import { GlobalThisWSS, WebSocketManager, type ExtendedGlobal } from "$lib/server/ws/WebSocketServer";
 import { sequence } from "@sveltejs/kit/hooks";
+import { WebSocketConnection } from "$lib/server/ws/WebSocketConnection";
 
 // WebSocket initialization middleware
 let wssInitialized = false;
+
 const initializeWebSocketServer: Handle = async ({ event, resolve }) => {
-  if (!wssInitialized && !building) {
-    console.log('[wss:kit] setup');
-    const manager = WebSocketManager.getInstance();
-    manager.initialize();
-    wssInitialized = true;
+  if (!wssInitialized) {
+    const wss = (globalThis as ExtendedGlobal)[GlobalThisWSS];
+    if (wss !== undefined) {
+      wss.on('connection', (ws, req) => {
+        console.log(`[wss:kit] client connected`);
+        new WebSocketConnection(ws, req);
+      });
+      wssInitialized = true;
+    }
   }
 
   if (!building) {

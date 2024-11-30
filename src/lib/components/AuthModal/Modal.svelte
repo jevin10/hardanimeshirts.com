@@ -9,12 +9,18 @@
 
   let { display = 'Login' }: Props = $props();
 
+  let errorMessage: string | null = $state(null);
+
   async function handleLoginSubmit() {
     try {
       await authModalState.submitLogin();
       // Handle success (e.g. show notification)
     } catch (err) {
-      // Handle error (e.g. show error message)
+      if (err instanceof Error) {
+        errorMessage = 'Invalid username or password!';
+      } else {
+        errorMessage = 'An unexpected error occurred.';
+      }
     }
   }
 </script>
@@ -37,6 +43,11 @@
         placeholder="password"
       />
     </div>
+    {#if errorMessage}
+      <div class="my-5">
+        <div class="text-m text-red-400">{errorMessage}</div>
+      </div>
+    {/if}
     <div class="my-5">
       <div class="text-m">
         Don't have an account?

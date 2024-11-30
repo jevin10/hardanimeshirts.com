@@ -21,7 +21,6 @@ export const POST: RequestHandler = async (event) => {
     await authService.login(validated);
 
     return json({ success: true });
-
   } catch (err) {
     // Handle Zod validation errors
     if (err instanceof ZodError) {

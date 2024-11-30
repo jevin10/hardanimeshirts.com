@@ -9,13 +9,22 @@ import { lucia } from '../auth';
 // On authentication, the connection gets upgraded and associated with a userId
 export class WebSocketConnection {
   public socketId: string;
-  private userId: string | null;
+  private user: {
+    username: string,
+    id: string
+  } | null;
   private ws: WebSocket;
   private messageProcessor: MessageProcessor;
 
-  constructor(ws: WebSocket, req: IncomingMessage) {
+  constructor(ws: WebSocket,
+    req: IncomingMessage,
+    user: {
+      username: string,
+      id: string
+    } | null
+  ) {
     this.socketId = nanoid();
-    this.userId = null;
+    this.user = user;
     this.ws = ws;
     this.messageProcessor = new MessageProcessor();
     this.initialize();

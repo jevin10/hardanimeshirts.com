@@ -5,10 +5,9 @@ import { ZodError } from "zod";
 
 const authService = AuthService.getInstance();
 
-export const POST: RequestHandler = async (event) => {
+export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
-    const formData = await event.request.formData();
-
+    const formData = await request.formData();
     const loginData: LoginInput = {
       username: formData.get('username')?.toString() ?? '',
       password: formData.get('password')?.toString() ?? ''
@@ -17,8 +16,7 @@ export const POST: RequestHandler = async (event) => {
     // Validate with zod schema
     const validated = loginSchema.parse(loginData);
 
-    // Call auth service with validated data
-    await authService.login(validated);
+    await authService.login(validated, cookies);
 
     return json({ success: true });
   } catch (err) {

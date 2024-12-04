@@ -26,6 +26,24 @@
   function isActive(path: string) {
     return $page.url.pathname.startsWith(path);
   }
+
+  async function handleSignOut() {
+    try {
+      const response = await fetch('/api/signout', {
+        method: 'POST'
+      });
+
+      if (response.ok) {
+        // redirect
+        window.location.href = '/';
+      } else {
+        // Handle error case
+        console.error('Signout failed');
+      }
+    } catch (error) {
+      console.error('Signout error:', error);
+    }
+  }
 </script>
 
 <div class="relative font-times">
@@ -84,7 +102,8 @@
     </div>
     <div>
       {#if user}
-        You are browsing as <button class="link">{user.username}</button>
+        You are browsing as <button class="link">{user.username}</button> |
+        <button class="link" onclick={handleSignOut}> Sign out </button>
       {:else}
         You are browsing as a guest. |
         <button

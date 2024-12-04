@@ -1,50 +1,14 @@
 <script lang="ts">
   import Banner from './components/Banner.svelte';
-  import { getWsStore } from '$lib/stores/websocket';
-  import { getPostsStore } from '$lib/stores/posts';
-  import type { posts_new } from '@prisma/client';
   import LatestPosts from './components/LatestPosts.svelte';
   import { getImageboardState } from '$lib/client/imageboard/Imageboard.svelte';
   import Stage from './components/Stage.svelte';
-  import { onMount } from 'svelte';
 
-  const wsStore = getWsStore();
-  const postsStore = getPostsStore();
+  const imageboardState = getImageboardState();
 
   console.log('sending request');
-  wsStore.send({
-    domain: 'imageboard',
-    action: 'request_content',
-    data: {
-      boardId: null,
-      page: 1,
-      limit: 5
-    }
-  });
 
-  let latestPosts = $derived.by(() => {
-    const allPosts: posts_new[] = [];
-
-    if (!$postsStore.threads.length && !$postsStore.orphans.length) {
-      return [];
-    }
-
-    for (const thread of $postsStore.threads) {
-      allPosts.push(thread.parent);
-      allPosts.push(...thread.children);
-    }
-    allPosts.push(...$postsStore.orphans);
-
-    const sortedPosts = allPosts
-      .sort((a, b) => {
-        const dateA = a.latest_activity ? new Date(a.latest_activity) : new Date(0);
-        const dateB = b.latest_activity ? new Date(b.latest_activity) : new Date(0);
-        return dateB.getTime() - dateA.getTime();
-      })
-      .slice(0, 3);
-
-    return sortedPosts;
-  });
+  let newPosts = imageboardState.getPosts().slice(0, 3);
 </script>
 
 <svelte:head>
@@ -75,7 +39,7 @@
         <Stage />
       </div>
       <div>
-        <LatestPosts posts={latestPosts} />
+        <LatestPosts posts={newPosts} />
       </div>
     </div>
   </div>

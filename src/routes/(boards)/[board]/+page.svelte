@@ -15,6 +15,7 @@
   let hasMore = $state(true);
   let bottomElement = $state<HTMLDivElement | null>(null);
   let currentObserver: IntersectionObserver | null = null;
+  let postFormVisible: boolean = $state(false);
 
   function loadMoreThreads() {
     if (isLoading || !hasMore || boardContext.id === null || !imageboardState.activeBoard) return;
@@ -29,6 +30,10 @@
         limit: 5
       }
     });
+  }
+
+  function togglePostForm() {
+    postFormVisible = !postFormVisible;
   }
 
   // observer for infinite loading on scroll
@@ -104,7 +109,7 @@
       goto(`/`);
     }}>[home]</button
   >
-  <button>[new post]</button>
+  <button onclick={togglePostForm}>[new post]</button>
 </div>
 
 <div class="w-full flex flex-col">
@@ -114,11 +119,13 @@
     {:else if imageboardState.activeBoard?.threads}
       {#if imageboardState.activeBoard.threads.length > 0}
         <div class="mt-2">
-          <div class="my-5">
-            {#if boardContext.name}
-              <PostForm boardId={boardContext.id} boardName={boardContext.name} />
-            {/if}
-          </div>
+          {#if postFormVisible}
+            <div class="my-5">
+              {#if boardContext.name}
+                <PostForm boardId={boardContext.id} boardName={boardContext.name} />
+              {/if}
+            </div>
+          {/if}
           {#each imageboardState.activeBoard.threads as thread}
             <div class="mt-5">
               <button

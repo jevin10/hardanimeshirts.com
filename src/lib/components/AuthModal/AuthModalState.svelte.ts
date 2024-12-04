@@ -43,6 +43,8 @@ export class AuthModalState {
 
       // If successful, close the modal
       this.closeModal();
+      // redirect
+      window.location.href = '/';
     } catch (err) {
       console.error('Login submission failed:', err);
       throw err; // Re-throw to handle in the UI

@@ -33,6 +33,13 @@ export class WebSocketClient {
     return WebSocketClient.instance;
   }
 
+  public static getImageboardState(): Imageboard {
+    if (!WebSocketClient.instance) {
+      throw new Error('WebSocketClient not initialized. Call initialize() first.');
+    }
+    return WebSocketClient.instance.imageboardState;
+  }
+
   async processMessage(message: BaseWSMessage) {
     console.log('processing message');
     return this.messageProcessor.handleMessage(message);

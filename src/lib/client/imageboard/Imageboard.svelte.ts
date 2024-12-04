@@ -7,6 +7,7 @@ export class Imageboard {
   boards: Map<number, Board> = $state(new Map());
   activeBoard: Board | null = $state(null);
   activeThread: Thread | null = $state(null);
+  allPosts: posts_new[] = $state([]);
 
   constructor() {
     const initialBoards = [
@@ -39,6 +40,10 @@ export class Imageboard {
     return this.boards.get(boardId) || null;
   }
 
+  getPosts(): posts_new[] {
+    return this.allPosts;
+  }
+
   setActiveBoard(boardId: number | null) {
     const board = this.getBoard(boardId);
     this.activeBoard = board;
@@ -60,68 +65,94 @@ export class Imageboard {
 
   // adds posts to respective boards/threads
   async addPosts(posts: posts_new[]) {
-    console.log('adding posts');
-    // Early return if no posts
-    if (!posts.length) return;
+    try {
+      console.log('[addPosts]');
+      if (!posts.length) return;
 
-    // Separate parents and children in a single pass
-    const parentPosts: posts_new[] = [];
-    const childrenByParentId = new Map<number, posts_new[]>();
-
-    for (const post of posts) {
-      if (post.parent_id === null) {
-        parentPosts.push(post);
-      } else if (post.parent_id) {
-        const children = childrenByParentId.get(post.parent_id) || [];
-        children.push(post);
-        childrenByParentId.set(post.parent_id, children);
-      }
-    }
-
-    // Process parent posts first - create new threads
-    for (const parentPost of parentPosts) {
-      const boardId = parentPost.board_id;
-      const board = this.boards.get(boardId);
-
-      if (!board) {
-        console.warn(`Board ${boardId} not found for post ${parentPost.id}`);
-        continue;
-      }
-
-      const thread = new Thread(parentPost);
-
-      // Add any children found for this parent
-      const children = childrenByParentId.get(parentPost.id);
-      if (children?.length) {
-        thread.children = children;
-      }
-
-      // Add thread to board
       try {
-        board.addThread(thread);
-      } catch (e) {
-        console.warn(`Failed to add thread ${parentPost.id} to board ${boardId}:`, e);
-      }
-    }
-
-    // Process remaining children posts that belong to existing threads
-    for (const [parentId, children] of childrenByParentId) {
-      // Skip children we've already handled with new threads
-      if (parentPosts.some(p => p.id === parentId)) continue;
-
-      // Find existing thread for these children
-      const boardId = children[0].board_id;
-      const board = this.boards.get(boardId);
-      if (!board) continue;
-
-      const thread = board.getThread(parentId);
-      if (!thread) {
-        console.warn(`Thread ${parentId} not found for children posts`);
-        continue;
+        this.allPosts = [...this.allPosts, ...posts].sort((a, b) => {
+          // Convert string dates to Date objects before comparing
+          const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+          return dateB - dateA;
+        });
+      } catch (error) {
+        console.error('Error sorting posts:', error);
+        throw error;
       }
 
-      // Add children to existing thread
-      thread.children = [...thread.children, ...children];
+      // Separate parents and children
+      const parentPosts: posts_new[] = [];
+      const childrenByParentId = new Map<number, posts_new[]>();
+
+      try {
+        for (const post of posts) {
+          if (post.parent_id === null) {
+            parentPosts.push(post);
+          } else if (post.parent_id) {
+            const children = childrenByParentId.get(post.parent_id) || [];
+            children.push(post);
+            childrenByParentId.set(post.parent_id, children);
+          }
+        }
+      } catch (error) {
+        console.error('Error separating posts:', error);
+        throw error;
+      }
+
+      // Process parent posts
+      try {
+        for (const parentPost of parentPosts) {
+          const boardId = parentPost.board_id;
+          const board = this.boards.get(boardId);
+          if (!board) {
+            console.warn(`Board ${boardId} not found for post ${parentPost.id}`);
+            continue;
+          }
+
+          const thread = new Thread(parentPost);
+          const children = childrenByParentId.get(parentPost.id);
+          if (children?.length) {
+            thread.children = children;
+          }
+
+          try {
+            board.addThread(thread);
+          } catch (e) {
+            console.error(`Failed to add thread ${parentPost.id} to board ${boardId}:`, e);
+            throw e;
+          }
+        }
+      } catch (error) {
+        console.error('Error processing parent posts:', error);
+        throw error;
+      }
+
+      // Process children posts
+      try {
+        for (const [parentId, children] of childrenByParentId) {
+          if (parentPosts.some(p => p.id === parentId)) continue;
+
+          const boardId = children[0].board_id;
+          const board = this.boards.get(boardId);
+          if (!board) continue;
+
+          const thread = board.getThread(parentId);
+          if (!thread) {
+            console.warn(`Thread ${parentId} not found for children posts`);
+            continue;
+          }
+
+          thread.children = [...thread.children, ...children];
+        }
+      } catch (error) {
+        console.error('Error processing child posts:', error);
+        throw error;
+      }
+
+    } catch (error) {
+      console.error('Fatal error in addPosts:', error);
+      throw error;
     }
   }
 

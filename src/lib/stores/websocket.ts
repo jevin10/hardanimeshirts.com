@@ -34,15 +34,6 @@ function createWebSocketStore(): WebSocketStore {
 
     ws.addEventListener('open', () => {
       update(state => ({ ...state, connected: true }));
-      send({
-        domain: 'imageboard',
-        action: 'request_content',
-        data: {
-          boardId: null,
-          page: 1,
-          limit: 3
-        }
-      });
       console.log('[websocket] connection open');
     });
 

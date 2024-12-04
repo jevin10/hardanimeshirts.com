@@ -16,6 +16,7 @@
   const postsStore: PostsStore = setPostsStore();
   const wsStore: WebSocketStore = setWsStore();
   const imageboardState: Imageboard = setImageboardState();
+  imageboardState.addPosts(data.initialPosts);
   WebSocketClient.initialize(postsStore, wsStore, imageboardState);
   setAuthModalState();
 

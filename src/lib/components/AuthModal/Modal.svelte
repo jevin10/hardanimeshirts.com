@@ -40,6 +40,7 @@
       <input
         bind:value={authModalState.loginForm.password}
         class="w-full text-lg px-2 placeholder:text-gray-500"
+        type="password"
         placeholder="password"
       />
     </div>
@@ -89,11 +90,13 @@
       <input
         bind:value={authModalState.signupForm.password}
         class="w-full text-lg px-2 placeholder:text-gray-500"
+        type="password"
         placeholder="password (8 characters, ≥1 symbol)"
       />
       <input
         bind:value={authModalState.signupForm.inviteCode}
         class="w-full text-lg px-2 placeholder:text-gray-500"
+        type="password"
         placeholder="invite code"
       />
     </div>

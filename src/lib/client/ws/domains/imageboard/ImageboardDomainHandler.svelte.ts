@@ -103,7 +103,6 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
 
     try {
       await this.imageboardState!.addPosts(params.posts);
-      this.postsStore!.add(params.posts);
     } catch (error) {
       throw new ImageboardHandlerError(
         'Failed to add posts to store',

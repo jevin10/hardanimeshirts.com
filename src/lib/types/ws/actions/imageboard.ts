@@ -1,17 +1,11 @@
 import type { posts_new } from "@prisma/client";
+import type { CreatePostPayload } from "./schemas";
 
 interface RequestContentPayload {
   boardId: number | null; // if null is passed, then it's just all boards
   page: number;
   threadId?: string;
   limit: number;
-}
-
-// TODO: edit this payload to match params
-interface CreatePostPayload {
-  content: string;
-  threadId?: string;
-  imageUrl?: string;
 }
 
 // client->server actions and their payloads

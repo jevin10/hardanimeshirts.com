@@ -1,11 +1,14 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { getAuthModalState } from '$lib/components/AuthModal/AuthModalState.svelte';
+  import { getWsStore, type WebSocketStore } from '$lib/stores/websocket';
+  import type { ImageboardMessage } from '$lib/types/ws/messages/imageboard';
   import type { User } from 'lucia';
   import { getContext } from 'svelte';
 
   const user: User | null = getContext('USER_CTX');
   const authModalState = getAuthModalState();
+  const wsStore: WebSocketStore = getWsStore();
 
   interface Props {
     boardId: number;
@@ -13,6 +16,26 @@
   }
 
   let { boardId, boardName }: Props = $props();
+
+  let formData = $state({
+    content: '',
+    imageUrl: null
+  });
+
+  function createPost() {
+    wsStore.send<ImageboardMessage>({
+      domain: 'imageboard',
+      action: 'create_post',
+      data: {
+        userId: user?.id ?? '',
+        username: user?.username ?? 'Anonymous',
+        boardId,
+        content: formData.content,
+        imageUrl: null,
+        parentId: null
+      }
+    });
+  }
 </script>
 
 {#if user}
@@ -33,6 +56,7 @@
       </button>
       <div class="border border-black dark:border-white flex justify-end px-1">Content</div>
       <textarea
+        bind:value={formData.content}
         class="col-span-3 border text-lg border-black dark:border-white p-1 dark:bg-black leading-none"
         rows="5"
         spellcheck="false"
@@ -40,6 +64,7 @@
     </div>
     <button
       class="w-full md:w-[25rem] border border-black dark:border-white flex justify-center gap-1 mt-1"
+      onclick={createPost}
     >
       [submit]
     </button>

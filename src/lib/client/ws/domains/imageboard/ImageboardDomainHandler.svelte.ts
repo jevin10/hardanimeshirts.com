@@ -43,7 +43,15 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
           };
           await this.handleContentResponse(contentMessage);
           return;
-        }
+        };
+        case 'post_created': {
+          const newMessage = message as ImageboardMessage & {
+            action: 'post_created';
+            data: ImageboardServerAction['post_created'];
+          };
+          await this.handlePostCreated(newMessage);
+          return;
+        };
         case 'error': {
           // Handle error messages from server
           const errorMessage = message as ImageboardMessage & {
@@ -73,6 +81,16 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
     }
   ): Promise<void> {
     const { posts } = message.data;
+    await this.pushPosts({ posts });
+  }
+
+  private async handlePostCreated(
+    message: ImageboardMessage & {
+      action: 'post_created';
+      data: ImageboardServerAction['post_created'];
+    }
+  ): Promise<void> {
+    const posts: posts_new[] = [message.data.post];
     await this.pushPosts({ posts });
   }
 

@@ -1,10 +1,12 @@
 import { z } from 'zod';
 import type { posts_new } from "@prisma/client";
-import type { ImageboardMessage } from "../../../../types/ws/messages/imageboard";
-import type DomainHandler from '../../../../shared/DomainHandler';
-import { ImageboardService, imageboardService } from '../../../../server/imageboard/ImageboardService';
 import { createPostSchema, type CreatePostPayload } from '$lib/types/ws/actions/schemas';
 import type { ImageboardServerAction } from '$lib/types/ws/actions/imageboard';
+import type { WebSocket } from 'ws';
+import type { ImageboardMessage } from '$lib/types/ws/messages/imageboard';
+import { ImageboardService, imageboardService } from '$lib/server/imageboard/ImageboardService';
+import type DomainHandler from '$lib/shared/DomainHandler';
+import { error } from '@sveltejs/kit';
 
 // Define the request content schema
 const requestContentSchema = z.object({
@@ -20,8 +22,21 @@ type RequestContentPayload = z.infer<typeof requestContentSchema>;
 // Handles all websocket messages pertaining to the imageboard domain.
 export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage> {
   private readonly imageboardService: ImageboardService;
+  private user: {
+    username: string,
+    id: string
+  } | null;
+  private ws: WebSocket;
 
-  constructor() {
+  constructor(
+    ws: WebSocket,
+    user: {
+      username: string,
+      id: string
+    } | null
+  ) {
+    this.ws = ws;
+    this.user = user;
     this.imageboardService = imageboardService;
   }
 
@@ -56,6 +71,9 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
 
   private async handleCreatePost(message: ImageboardMessage): Promise<ImageboardMessage> {
     try {
+      if (!this.user) {
+        throw new Error('WebSocket does not have an associated user, cannot create post');
+      }
       const validatedData = createPostSchema.parse(message.data);
       const response = await this.createPost(validatedData);
       return {

@@ -8,6 +8,7 @@ import { validateSession } from "$lib/server/auth/utils/validateSession";
 
 // WebSocket initialization middleware
 let wssInitialized = false;
+const clients = new Set<WebSocketConnection>();
 
 const initializeWebSocketServer: Handle = async ({ event, resolve }) => {
   if (!wssInitialized) {

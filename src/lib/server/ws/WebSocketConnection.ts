@@ -16,7 +16,8 @@ export class WebSocketConnection {
   private ws: WebSocket;
   private messageProcessor: MessageProcessor;
 
-  constructor(ws: WebSocket,
+  constructor(
+    ws: WebSocket,
     req: IncomingMessage,
     user: {
       username: string,
@@ -26,7 +27,7 @@ export class WebSocketConnection {
     this.socketId = nanoid();
     this.user = user;
     this.ws = ws;
-    this.messageProcessor = new MessageProcessor();
+    this.messageProcessor = new MessageProcessor(ws, user);
     this.initialize();
   }
 

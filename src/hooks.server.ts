@@ -5,57 +5,19 @@ import { GlobalThisWSS, type ExtendedGlobal } from "$lib/server/ws/WebSocketServ
 import { sequence } from "@sveltejs/kit/hooks";
 import { WebSocketConnection } from "$lib/server/ws/WebSocketConnection";
 import { validateSession } from "$lib/server/auth/utils/validateSession";
+import { WebSocketManager } from "$lib/server/ws/WebSocketManager";
 
 // WebSocket initialization middleware
 let wssInitialized = false;
-const clients = new Set<WebSocketConnection>();
 
 const initializeWebSocketServer: Handle = async ({ event, resolve }) => {
   if (!wssInitialized) {
     const wss = (globalThis as ExtendedGlobal)[GlobalThisWSS];
+    const wsManager = WebSocketManager.getInstance();
+
     if (wss !== undefined) {
       wss.on('connection', async (ws, req) => {
-        try {
-          // Get cookies from request headers
-          const cookies = req.headers.cookie;
-          if (!cookies) {
-            console.log('[wss:kit] no cookies found, creating anonymous connection');
-            new WebSocketConnection(ws, req, null);
-            return;
-          }
-
-          // Parse the session cookie - assuming your session cookie is named 'auth_session'
-          const sessionId = cookies
-            .split(';')
-            .find(c => c.trim().startsWith('auth_session='))
-            ?.split('=')[1];
-
-          if (!sessionId) {
-            console.log('[wss:kit] no session cookie found, creating anonymous connection');
-            new WebSocketConnection(ws, req, null);
-            return;
-          }
-
-          // Validate the session using Lucia
-          const { session, user } = await validateSession(sessionId);
-
-          if (!session || !user) {
-            console.log('[wss:kit] invalid session, creating anonymous connection');
-            new WebSocketConnection(ws, req, null);
-            return;
-          }
-
-          // Create authenticated connection
-          console.log(`[wss:kit] authenticated connection for user ${user.username}`);
-          new WebSocketConnection(ws, req, {
-            username: user.username,
-            id: user.id
-          });
-
-        } catch (error) {
-          console.error('[wss:kit] error processing connection:', error);
-          new WebSocketConnection(ws, req, null);
-        }
+        wsManager.handleNewConnection(ws, req);
       });
       wssInitialized = true;
     }

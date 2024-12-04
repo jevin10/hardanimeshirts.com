@@ -6,7 +6,7 @@ import type { WebSocket } from 'ws';
 import type { ImageboardMessage } from '$lib/types/ws/messages/imageboard';
 import { ImageboardService, imageboardService } from '$lib/server/imageboard/ImageboardService';
 import type DomainHandler from '$lib/shared/DomainHandler';
-import { error } from '@sveltejs/kit';
+import { WebSocketManager } from '../../WebSocketManager';
 
 // Define the request content schema
 const requestContentSchema = z.object({
@@ -22,6 +22,7 @@ type RequestContentPayload = z.infer<typeof requestContentSchema>;
 // Handles all websocket messages pertaining to the imageboard domain.
 export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage> {
   private readonly imageboardService: ImageboardService;
+  private webSocketManager: WebSocketManager;
   private user: {
     username: string,
     id: string
@@ -38,15 +39,18 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
     this.ws = ws;
     this.user = user;
     this.imageboardService = imageboardService;
+    this.webSocketManager = WebSocketManager.getInstance();
   }
 
-  async handle(message: ImageboardMessage): Promise<ImageboardMessage> {
+  async handle(message: ImageboardMessage): Promise<ImageboardMessage | void> {
     switch (message.action) {
       case 'request_content':
         return this.handleRequestContent(message);
       case 'create_post':
         console.log('create_post action invoked');
-        return this.handleCreatePost(message);
+        const result = await this.handleCreatePost(message);
+        this.webSocketManager.broadcast(result);
+        return;
       default:
         throw new Error(`Unhandled action: ${message.action}`);
     }

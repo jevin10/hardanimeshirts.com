@@ -1,7 +1,8 @@
-import type { WebSocket } from "ws";
+import { WebSocket } from "ws";
 import { WebSocketConnection } from "./WebSocketConnection";
 import { IncomingMessage } from 'http';
 import { validateSession } from "../auth/utils/validateSession";
+import type { BaseWSMessage } from "$lib/types/ws/messages/base";
 
 export class WebSocketManager {
   private static instance: WebSocketManager;
@@ -30,6 +31,7 @@ export class WebSocketManager {
 
   private createConnection(ws: WebSocket, req: IncomingMessage, authData: { username: string; id: string } | null): void {
     const connection = new WebSocketConnection(ws, req, authData);
+
     this.connections.add(connection);
 
     // Remove connection when it closes
@@ -65,6 +67,18 @@ export class WebSocketManager {
     } catch (error) {
       console.error('[wss:kit] error processing connection:', error);
       this.createConnection(ws, req, null);
+    }
+  }
+
+  // send a message to all connected WebSocketConnections
+  public broadcast<T extends BaseWSMessage>(message: T): void {
+    for (const connection of this.connections) {
+      try {
+        // Simply send the message directly
+        connection.send(message);
+      } catch (err) {
+        console.error(`[WebSocketManager] Error broadcasting message (${connection.socketId}):`, err);
+      }
     }
   }
 }

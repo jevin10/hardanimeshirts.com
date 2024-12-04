@@ -6,14 +6,41 @@
   import { goto } from '$app/navigation';
   import type { BoardContext } from '$lib/types/imageboard';
   import type { PageData } from './$types';
+  import { getWsStore } from '$lib/stores/websocket';
+  import type { ImageboardMessage } from '$lib/types/ws/messages/imageboard';
+  import type { User } from 'lucia';
 
   let { data }: { data: PageData } = $props();
 
   const imageboardState = getImageboardState();
   const boardContext: BoardContext = getContext('BOARD_CTX');
+  const wsStore = getWsStore();
+  const user: User | null = getContext('USER_CTX');
+
+  let formData = $state({
+    content: '',
+    imageUrl: null
+  });
 
   function scrollToReply() {
     document.querySelector('textarea')?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function createReply() {
+    if (boardContext.id === null || !imageboardState.activeThread) return;
+
+    wsStore.send<ImageboardMessage>({
+      domain: 'imageboard',
+      action: 'create_post',
+      data: {
+        userId: user?.id ?? '',
+        username: user?.username ?? 'Anonymous',
+        boardId: boardContext.id,
+        content: formData.content,
+        imageUrl: null,
+        parentId: imageboardState.activeThread.parent.id
+      }
+    });
   }
 
   // TODO:
@@ -55,13 +82,13 @@
         <button>[attach image]</button>
       </div>
       <textarea
+        bind:value={formData.content}
         class="w-full md:w-[40rem] border border-black dark:border-white dark:bg-black resize-none text-lg p-2 leading-none"
         rows="5"
         spellcheck="false"
       ></textarea>
       <div class="w-full md:w-[40rem] flex justify-start gap-1">
-        <button>[submit]</button>
-        <button>[preview]</button>
+        <button onclick={createReply}> [submit] </button>
       </div>
     </div>
   {:else}

@@ -9,12 +9,12 @@ import { lucia } from '../auth';
 // On authentication, the connection gets upgraded and associated with a userId
 export class WebSocketConnection {
   public socketId: string;
-  private user: {
+  public user: {
     username: string,
     id: string
   } | null;
-  private ws: WebSocket;
-  private messageProcessor: MessageProcessor;
+  public ws: WebSocket;
+  public messageProcessor: MessageProcessor;
 
   constructor(
     ws: WebSocket,
@@ -58,7 +58,7 @@ export class WebSocketConnection {
     this.ws.on('close', this.handleClose.bind(this));
   }
 
-  private send(message: BaseWSMessage): void {
+  send(message: BaseWSMessage): void {
     if (this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
     }

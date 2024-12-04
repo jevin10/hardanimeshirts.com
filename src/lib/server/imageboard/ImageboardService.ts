@@ -1,6 +1,7 @@
 import { ImageboardRepositoryImpl } from "./repository/ImageboardRepositoryImpl";
 import type ImageboardRepository from "./repository/ImageboardRepository";
 import type { posts_new } from "@prisma/client";
+import type { CreatePostPayload } from "$lib/types/ws/actions/schemas";
 
 export class ImageboardService {
   private static instance: ImageboardService;
@@ -26,6 +27,10 @@ export class ImageboardService {
    */
   async getContent(boardId: number | null, page: number, limit: number, threadId?: number): Promise<posts_new[]> {
     return await this.repository.getContent(boardId, page, limit, threadId);
+  }
+
+  async uploadPost(params: CreatePostPayload): Promise<posts_new> {
+    return await this.repository.uploadPost(params);
   }
 }
 

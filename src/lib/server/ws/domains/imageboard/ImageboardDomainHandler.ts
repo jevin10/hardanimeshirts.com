@@ -81,16 +81,7 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
 
   private async createPost(params: CreatePostPayload): Promise<ImageboardServerAction['post_created']> {
     console.log('[createPost] creating post');
-    let post: posts_new = {
-      id: 1,
-      user_id: 'Anonymous',
-      image_url: null,
-      board_id: 1,
-      parent_id: null,
-      created_at: new Date(),
-      latest_activity: new Date(),
-      content: 'test',
-    };
+    const post = await imageboardService.uploadPost(params);
     return {
       post
     };

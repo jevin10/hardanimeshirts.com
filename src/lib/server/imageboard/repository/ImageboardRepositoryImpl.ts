@@ -1,6 +1,8 @@
 import type { posts_new } from "@prisma/client";
 import type ImageboardRepository from "./ImageboardRepository";
 import prisma from "../../../prisma";
+import type { CreatePostPayload } from "$lib/types/ws/actions/schemas";
+import { error } from "@sveltejs/kit";
 
 export class ImageboardRepositoryImpl implements ImageboardRepository {
   /**
@@ -57,6 +59,26 @@ export class ImageboardRepositoryImpl implements ImageboardRepository {
         // Combine parents and replies, maintaining parent-first order
         return [...parentThreads, ...replies];
       });
+    }
+  }
+
+  async uploadPost(params: CreatePostPayload): Promise<posts_new> {
+    try {
+      console.log('Uploading post to db');
+      const newPost = await prisma.posts_new.create({
+        data: {
+          board_id: params.boardId,
+          content: params.content,
+          user_id: params.username,
+          image_url: params.imageUrl,
+          parent_id: params.parentId
+        }
+      });
+
+      return newPost;
+    } catch (err) {
+      console.error('Error uploading post:', err);
+      throw error(500, 'Failed to upload post');
     }
   }
 }

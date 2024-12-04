@@ -112,7 +112,7 @@
   <button onclick={togglePostForm}>[new post]</button>
 </div>
 
-<div class="w-full flex flex-col">
+<div class="min-h-screen w-full flex flex-col">
   <div class="mx-3">
     {#if boardContext.id === null}
       <p>Invalid board</p>

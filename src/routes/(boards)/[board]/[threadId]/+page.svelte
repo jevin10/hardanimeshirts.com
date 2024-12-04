@@ -42,7 +42,7 @@
   <button onclick={scrollToReply}>[reply]</button>
 </div>
 
-<div class="mx-3 my-5">
+<div class="mx-3 mt-5 pb-5">
   {#if imageboardState.activeThread}
     <Thread
       parent={imageboardState.activeThread.parent}

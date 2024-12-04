@@ -130,11 +130,14 @@
       <div class="w-full border-b border-black dark:border-white flex flex-row justify-between p-1">
         <div class="text-m">Authenticate | {display}</div>
         <button
+          type="button"
           onclick={() => {
             errorMessage = '';
             authModalState.closeModal();
-          }}>[x]</button
+          }}
         >
+          [x]
+        </button>
       </div>
       <div class="flex-1 flex items-center justify-center">
         {#if display === 'Login'}

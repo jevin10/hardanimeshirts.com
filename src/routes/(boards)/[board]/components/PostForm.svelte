@@ -35,6 +35,11 @@
         parentId: null
       }
     });
+
+    formData = {
+      content: '',
+      imageUrl: null
+    };
   }
 </script>
 

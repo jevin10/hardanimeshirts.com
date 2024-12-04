@@ -26,6 +26,14 @@
     document.querySelector('textarea')?.scrollIntoView({ behavior: 'smooth' });
   }
 
+  function handleKeydown(event: KeyboardEvent) {
+    // Submit on Enter but not if Shift is held (allow Shift+Enter for newlines)
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault(); // Prevent newline from being added
+      createReply();
+    }
+  }
+
   function createReply() {
     if (boardContext.id === null || !imageboardState.activeThread) return;
 
@@ -41,6 +49,11 @@
         parentId: imageboardState.activeThread.parent.id
       }
     });
+
+    formData = {
+      content: '',
+      imageUrl: null
+    };
   }
 
   // TODO:
@@ -83,6 +96,7 @@
       </div>
       <textarea
         bind:value={formData.content}
+        onkeydown={handleKeydown}
         class="w-full md:w-[40rem] border border-black dark:border-white dark:bg-black resize-none text-lg p-2 leading-none"
         rows="5"
         spellcheck="false"

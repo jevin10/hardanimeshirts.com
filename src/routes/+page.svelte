@@ -24,7 +24,7 @@
   <meta name="robots" content="index, follow" />
 </svelte:head>
 
-<div class="w-full flex flex-col items-center">
+<div class="h-screen w-full flex flex-col items-center">
   <div class="mt-10">
     <Banner />
     <div

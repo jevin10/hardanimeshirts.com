@@ -5,6 +5,7 @@
   import { getAuthModalState } from '../AuthModal/AuthModalState.svelte';
   import { getContext } from 'svelte';
   import type { User } from '@prisma/client';
+  import ThemeToggle from './ThemeToggle.svelte';
 
   const wsStore = getWsStore();
   const authModalState = getAuthModalState();
@@ -83,6 +84,7 @@
       <span class="text-gray-500">]</span>
     </div>
     <div class="nav-link flex space-x-1 items-center">
+      <ThemeToggle />
       <button
         class={`nav-link ${isActive('/menu') ? 'underline' : ''}`}
         onclick={() => navigate('/menu')}

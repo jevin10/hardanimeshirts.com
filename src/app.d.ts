@@ -1,5 +1,6 @@
 import { ExtendedWebSocketServer } from "$lib/server/ws/WebSocketServer";
 import type { Session } from "@prisma/client";
+import 'unplugin-icons/types/svelte';
 
 declare global {
   namespace App {

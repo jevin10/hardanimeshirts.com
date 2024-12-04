@@ -22,7 +22,7 @@
 </script>
 
 {#snippet header(data: HeaderProps)}
-  <span class="text-lg">
+  <span class="text-m">
     <button
       onclick={() => {
         goto(`/profile/${data.username}`);
@@ -32,7 +32,7 @@
       {data.username}
     </button>
   </span>
-  <span class="text-xs">
+  <span class="text-sm text-gray-600 dark:text-gray-300">
     {formatDate(data.date)}
     No.{data.id}
   </span>

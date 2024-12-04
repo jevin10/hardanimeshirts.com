@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
-  darkMode: 'selector',
+  darkMode: 'class',
   theme: {
     fontFamily: {
       sans: ['Arial', 'Helvetica', 'sans-serif'],
@@ -21,7 +21,6 @@ export default {
       animation: {
         blink: 'blink 1s step-end infinite'
       }
-    },
-    plugins: []
+    }
   }
 };

@@ -51,7 +51,18 @@
   });
 </script>
 
-<div class="h-screen">
+<svelte:head>
+  {@html `
+    <script>
+      (function() {
+        let theme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      })();
+    </script>
+  `}
+</svelte:head>
+
+<div class="min-h-screen bg-white dark:bg-black text-black dark:text-white">
   {#if connectionState === 'ready'}
     <main class="h-full">
       <Modal />

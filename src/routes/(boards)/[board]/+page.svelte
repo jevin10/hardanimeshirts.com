@@ -26,8 +26,8 @@
       action: 'request_content',
       data: {
         boardId: boardContext.id,
-        page: Math.floor(imageboardState.activeBoard.threads.length / 5) + 1,
-        limit: 5
+        page: Math.floor(imageboardState.activeBoard.threads.length / 10) + 1,
+        limit: 10
       }
     });
   }
@@ -50,8 +50,8 @@
         }
       },
       {
-        threshold: 0.1,
-        rootMargin: '200px'
+        threshold: 1,
+        rootMargin: '1000px'
       }
     );
 

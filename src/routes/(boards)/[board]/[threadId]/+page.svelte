@@ -88,6 +88,7 @@
       parent={imageboardState.activeThread.parent}
       children={imageboardState.activeThread.children}
       locked={imageboardState.activeThread.locked}
+      expanded={true}
     />
     <div class="mt-2">
       <div class="text-xl">New Reply</div>

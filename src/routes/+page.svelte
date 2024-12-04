@@ -3,6 +3,7 @@
   import LatestPosts from './components/LatestPosts.svelte';
   import { getImageboardState } from '$lib/client/imageboard/Imageboard.svelte';
   import Stage from './components/Stage.svelte';
+  import KissAnimeAd from '$lib/components/ads/KissAnimeAd.svelte';
 
   const imageboardState = getImageboardState();
 
@@ -40,6 +41,9 @@
       </div>
       <div>
         <LatestPosts posts={newPosts} />
+      </div>
+      <div>
+        <KissAnimeAd />
       </div>
     </div>
   </div>

@@ -13,8 +13,8 @@ export type ExtendedGlobal = typeof globalThis & {
 
 
 // Top level interface for managing websockets
-export class WebSocketManager {
-  private static instance: WebSocketManager;
+export class ExtendedServer {
+  private static instance: ExtendedServer;
   private wss: ExtendedWebSocketServer;
 
   private constructor() {
@@ -23,12 +23,12 @@ export class WebSocketManager {
     this.setupEventHandlers();
   }
 
-  public static getInstance(): WebSocketManager {
-    if (!WebSocketManager.instance) {
-      WebSocketManager.instance = new WebSocketManager();
+  public static getInstance(): ExtendedServer {
+    if (!ExtendedServer.instance) {
+      ExtendedServer.instance = new ExtendedServer();
       console.log('[WebSocket] Creating new WSS instance');
     }
-    return WebSocketManager.instance;
+    return ExtendedServer.instance;
   }
 
   public initialize(): void {

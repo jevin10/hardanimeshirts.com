@@ -1,4 +1,4 @@
-import { WebSocketManager } from './src/lib/server/ws/WebSocketServer';
+import { ExtendedServer } from './src/lib/server/ws/WebSocketServer';
 import { sveltekit } from '@sveltejs/kit/vite';
 import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'vite';
@@ -13,13 +13,13 @@ export default defineConfig({
     {
       name: 'webSocketServer',
       configureServer(server: ViteDevServer) {
-        const manager = WebSocketManager.getInstance();
+        const extendedServer = ExtendedServer.getInstance();
         server.httpServer?.on('upgrade', (req, socket, head) => {
-          manager.handleUpgrade(req, socket, head);
+          extendedServer.handleUpgrade(req, socket, head);
         });
 
         server.httpServer?.on('close', () => {
-          const wss = manager['wss'];
+          const wss = extendedServer['wss'];
           wss?.close();
         });
       }

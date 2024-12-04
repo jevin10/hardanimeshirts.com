@@ -31,12 +31,12 @@
   }
 </script>
 
-<button on:click={toggleTheme} aria-label="Toggle theme" class="flex flex-row items-center">
+<button on:click={toggleTheme} aria-label="Toggle theme" class="flex flex-row items-end gap-1">
   <span class="inline-block">[</span>
   {#if isDark}
-    <SunnyIcon class="h-4 w-4" />
+    <MoonIcon class="h-5 w-5" />
   {:else}
-    <MoonIcon class="h-4 w-4" />
+    <SunnyIcon class="h-5 w-5" />
   {/if}
   <span class="inline-block">]</span>
 </button>

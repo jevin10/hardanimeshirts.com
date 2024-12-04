@@ -9,10 +9,6 @@
   import ReallyGoesHardImage from '$lib/img/bannerimages/reallygoeshard.png';
   import SoldOutImage from '$lib/img/bannerimages/soldout.png';
   import SunKenImage from '$lib/img/bannerimages/sunken.png';
-  import ClothesImage from '$lib/img/bannerimages/clothes.png';
-  import BlogImage from '$lib/img/bannerimages/blog.png';
-  import GeneralImage from '$lib/img/bannerimages/general.png';
-  import MikuImage from '$lib/img/bannerimages/mikuevent.png';
   import HomeGif from '$lib/img/has_top_25.gif';
 
   const homeImages: string[] = [
@@ -45,7 +41,7 @@
 
     intervalId = setInterval(() => {
       currentImageIndex = (currentImageIndex + 1) % homeImages.length;
-    }, 5550);
+    }, 1000);
   });
 
   onDestroy(() => {
@@ -57,7 +53,7 @@
 
 <div class="border-none bg-transparent p-0">
   <img
-    class="block mx-auto h-40 md:h-48 border-2 border-black dark:border-white"
+    class="block mx-auto h-40 md:h-48 border-2 border-black dark:invert"
     src={currentImage}
     alt="She only loves me for my hard anime shirts."
   />

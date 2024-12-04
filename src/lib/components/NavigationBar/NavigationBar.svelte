@@ -95,7 +95,7 @@
   </nav>
   <div class="flex flex-row justify-between pt-1 px-1 text-xs bg-white dark:bg-black">
     <div class="flex justify-start">
-      <span class="mr-1">server | </span>
+      <span class="mr-1">client | </span>
       {#if connected}
         <span class="text-green-500 dark:text-green-400">■ connected</span>
       {:else}

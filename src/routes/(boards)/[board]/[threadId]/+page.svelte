@@ -55,7 +55,7 @@
         <button>[attach image]</button>
       </div>
       <textarea
-        class="w-full md:w-[40rem] border border-black dark:border-white dark:bg-black resize-none text-lg p-2"
+        class="w-full md:w-[40rem] border border-black dark:border-white dark:bg-black resize-none text-lg p-2 leading-none"
         rows="5"
         spellcheck="false"
       ></textarea>

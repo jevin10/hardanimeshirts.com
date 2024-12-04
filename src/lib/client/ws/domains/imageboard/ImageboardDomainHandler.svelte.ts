@@ -1,7 +1,6 @@
 import type DomainHandler from "$lib/shared/DomainHandler";
 import type { ImageboardMessage } from "$lib/types/ws/messages/imageboard";
 import type { WebSocketStore } from '$lib/stores/websocket';
-import type { PostsStore } from "$lib/stores/posts";
 import type { posts_new } from "@prisma/client";
 import type { ImageboardServerAction } from "$lib/types/ws/actions/imageboard";
 import type { Imageboard } from "$lib/client/imageboard/Imageboard.svelte";
@@ -19,7 +18,6 @@ export class ImageboardHandlerError extends Error {
 }
 
 export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage> {
-  private postsStore?: PostsStore;
   private imageboardState?: Imageboard;
   private logger: Console;
 
@@ -27,13 +25,12 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
     this.logger = logger;
   }
 
-  init(deps: { postsStore: PostsStore, imageboardState: Imageboard }) {
-    this.postsStore = deps.postsStore;
+  init(deps: { imageboardState: Imageboard }) {
     this.imageboardState = deps.imageboardState;
   }
 
   async handle(message: ImageboardMessage): Promise<void | ImageboardMessage> {
-    if (!this.postsStore) {
+    if (!this.imageboardState) {
       throw new ImageboardHandlerError('Handler not initialized');
     }
 

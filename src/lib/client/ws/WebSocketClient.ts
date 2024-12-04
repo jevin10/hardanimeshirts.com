@@ -1,7 +1,6 @@
 import type { BaseWSMessage, WSMessage } from '$lib/types/ws/messages/base';
 import { writable } from 'svelte/store';
 import { MessageProcessor } from './MessageProcessor';
-import type { PostsStore } from '$lib/stores/posts';
 import type { WebSocketStore } from '$lib/stores/websocket';
 import { getImageboardState, type Imageboard } from '../imageboard/Imageboard.svelte';
 
@@ -9,19 +8,17 @@ export class WebSocketClient {
   private static instance: WebSocketClient;
   private messageProcessor: MessageProcessor;
   private imageboardState: Imageboard;
-  private postsStore: PostsStore;
   private wsStore: WebSocketStore;
 
-  private constructor(postsStore: PostsStore, wsStore: WebSocketStore, imageboardState: Imageboard) {
-    this.postsStore = postsStore;
+  private constructor(wsStore: WebSocketStore, imageboardState: Imageboard) {
     this.wsStore = wsStore;
     this.imageboardState = imageboardState;
-    this.messageProcessor = MessageProcessor.getInstance({ postsStore, imageboardState });
+    this.messageProcessor = MessageProcessor.getInstance({ imageboardState });
   }
 
-  public static initialize(postsStore: PostsStore, wsStore: WebSocketStore, imageboardState: Imageboard): WebSocketClient {
+  public static initialize(wsStore: WebSocketStore, imageboardState: Imageboard): WebSocketClient {
     if (!WebSocketClient.instance) {
-      WebSocketClient.instance = new WebSocketClient(postsStore, wsStore, imageboardState);
+      WebSocketClient.instance = new WebSocketClient(wsStore, imageboardState);
     }
     return WebSocketClient.instance;
   }

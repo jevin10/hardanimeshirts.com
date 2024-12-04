@@ -33,12 +33,10 @@
       </button>
       <div class="border border-black dark:border-white flex justify-end px-1">Content</div>
       <textarea
-        class="col-span-3 border text-lg border-black dark:border-white px-1 dark:bg-black"
+        class="col-span-3 border text-lg border-black dark:border-white p-1 dark:bg-black leading-none"
         rows="5"
         spellcheck="false"
       ></textarea>
-      <div class="border border-black dark:border-white flex justify-end px-1">Captcha</div>
-      <div class="col-span-3 px-1 border border-black dark:border-white">Captcha</div>
     </div>
     <button
       class="w-full md:w-[25rem] border border-black dark:border-white flex justify-center gap-1 mt-1"

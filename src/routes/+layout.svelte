@@ -4,7 +4,6 @@
   import { browser } from '$app/environment';
   import NavigationBar from '$lib/components/NavigationBar/NavigationBar.svelte';
   import Modal from '$lib/components/AuthModal/Modal.svelte';
-  import { setPostsStore, type PostsStore } from '$lib/stores/posts';
   import { WebSocketClient } from '$lib/client/ws/WebSocketClient';
   import { onDestroy, onMount, setContext, type Snippet } from 'svelte';
   import { setImageboardState, type Imageboard } from '$lib/client/imageboard/Imageboard.svelte';
@@ -13,11 +12,10 @@
 
   let { children, data }: { children: Snippet; data: LayoutData } = $props();
 
-  const postsStore: PostsStore = setPostsStore();
   const wsStore: WebSocketStore = setWsStore();
   const imageboardState: Imageboard = setImageboardState();
   imageboardState.addPosts(data.initialPosts);
-  WebSocketClient.initialize(postsStore, wsStore, imageboardState);
+  WebSocketClient.initialize(wsStore, imageboardState);
   setAuthModalState();
 
   setContext('USER_CTX', data.user);

@@ -2,6 +2,7 @@ import { getContext, setContext } from "svelte";
 import { UserData } from "./UserData.svelte";
 import type { Imageboard } from "../imageboard/Imageboard.svelte";
 import type { User } from "lucia";
+import { SvelteMap } from "svelte/reactivity";
 
 interface UsersDeps {
   imageboardState: Imageboard;
@@ -10,7 +11,7 @@ interface UsersDeps {
 
 export class Users {
   private imageboardState: Imageboard;
-  users: Map<string, UserData> = $state(new Map());
+  users: SvelteMap<string, UserData> = $state(new SvelteMap());
   currentUserData: UserData | null = $state(null);
 
   constructor(deps: UsersDeps) {
@@ -26,12 +27,22 @@ export class Users {
     }
   }
 
+  createUserData(userId: string, username: string): UserData {
+    const userData = new UserData({
+      userId,
+      username
+    }, this.imageboardState);
+    this.addUserData(userData);
+    return userData;
+  }
+
   addUserData(userData: UserData) {
-    if (this.users.has(userData.id.userId)) {
+    if (this.users.has(userData.id.username)) {
       console.log('[Users] UserData already exists in map, not adding');
       return;
     }
-    this.users.set(userData.id.userId, userData);
+    console.log('[Users] Adding UserData to map');
+    this.users.set(userData.id.username, userData);
   }
 }
 

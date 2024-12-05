@@ -20,7 +20,7 @@
     imageboardState
   });
   imageboardState.addPosts(data.initialPosts);
-  WebSocketClient.initialize(wsStore, imageboardState);
+  WebSocketClient.initialize(wsStore, imageboardState, usersState);
   setAuthModalState();
 
   setContext('USER_CTX', data.user);

@@ -123,16 +123,18 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
 
     // Type assertion since we know userId is non-null from check above
     const userId = message.data.userId as string;
-    const userData = this.usersState.users.get(userId);
+    const username = message.data.username;
+    let userData = this.usersState.users.get(username);
 
     if (!userData) {
-      throw new UserHandlerError('User data not found');
+      console.log('UserData not found, creating user data');
+      userData = this.usersState?.createUserData(userId, username);
+    } else {
+      // Set user data with non-null values
+      userData.id = {
+        username,
+        userId
+      };
     }
-
-    // Set user data with non-null values
-    userData.id = {
-      username: message.data.username as string,
-      userId: userId
-    };
   }
 }

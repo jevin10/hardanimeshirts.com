@@ -1,5 +1,6 @@
 import type { Domain } from "../domains";
 import type { ImageboardMessage } from "./imageboard";
+import type { UserMessage } from "./user";
 
 export interface BaseWSMessage {
   domain: Domain;
@@ -16,5 +17,5 @@ export interface ServerResponseMessage extends BaseWSMessage {
 }
 
 
-export type WSMessage = ImageboardMessage | ServerResponseMessage;
+export type WSMessage = ImageboardMessage | ServerResponseMessage | UserMessage;
 

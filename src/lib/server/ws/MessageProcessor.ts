@@ -2,6 +2,7 @@ import type { BaseWSMessage } from "../../types/ws/messages/base";
 import type DomainHandler from "../../shared/DomainHandler";
 import { ImageboardDomainHandler } from "./domains/imageboard/ImageboardDomainHandler";
 import type { WebSocket } from "ws";
+import { UserDomainHandler } from "./domains/user/UserDomainHandler";
 
 // Processes messages for the server
 // Takes messages and routes them to their proper DomainHandlers
@@ -25,6 +26,7 @@ export class MessageProcessor {
     this.domainHandlers = new Map();
     // register domain handlers
     this.domainHandlers.set('imageboard', new ImageboardDomainHandler(ws, user));
+    this.domainHandlers.set('user', new UserDomainHandler(ws, user));
   }
 
   async handleMessage<T extends BaseWSMessage>(message: T): Promise<T | void> {

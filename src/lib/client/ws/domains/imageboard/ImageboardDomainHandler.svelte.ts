@@ -115,7 +115,6 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
     if (!params.posts) {
       throw new ImageboardHandlerError('No posts to push');
     }
-
     try {
       await this.imageboardState!.addPosts(params.posts);
     } catch (error) {

@@ -15,6 +15,7 @@ export class UserHandlerError extends Error {
   }
 }
 
+// TODO: Register this domain in MessageProcessor
 export class UserDomainHandler implements DomainHandler<UserMessage> {
   private usersState?: string;
   private imageboardState?: Imageboard;

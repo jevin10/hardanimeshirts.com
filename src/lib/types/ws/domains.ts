@@ -1,1 +1,1 @@
-export type Domain = 'presence' | 'imageboard'
+export type Domain = 'presence' | 'imageboard' | 'user'

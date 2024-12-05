@@ -104,7 +104,10 @@
     </div>
     <div>
       {#if user}
-        You are browsing as <button class="link">{user.username}</button> |
+        You are browsing as <button class="link" onclick={() => goto(`/profile/${user.username}`)}
+          >{user.username}</button
+        >
+        |
         <button class="link" onclick={handleSignOut}> Sign out </button>
       {:else}
         You are browsing as a guest. |

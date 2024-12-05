@@ -65,7 +65,11 @@
     <main class="h-full">
       <Modal />
       <NavigationBar />
-      {@render children()}
+      <div class="flex w-full justify-center">
+        <div class="max-w-6xl w-full">
+          {@render children()}
+        </div>
+      </div>
     </main>
   {:else}
     <div class="h-screen items-center justify-center flex">

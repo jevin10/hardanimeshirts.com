@@ -38,7 +38,6 @@ export class WebSocketClient {
   }
 
   async processMessage(message: BaseWSMessage) {
-    console.log('processing message');
     return this.messageProcessor.handleMessage(message);
   }
 }

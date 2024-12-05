@@ -7,8 +7,6 @@
 
   const imageboardState = getImageboardState();
 
-  console.log('sending request');
-
   let newPosts = imageboardState.getPosts().slice(0, 3);
 </script>
 

@@ -11,7 +11,7 @@
   }
 </script>
 
-<div class="relative max-w-xl mx-auto my-8">
+<div class="relative max-w-sm mx-auto my-8">
   <!-- Flash Message -->
   {#if showFlash}
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">

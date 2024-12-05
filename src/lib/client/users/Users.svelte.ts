@@ -1,16 +1,28 @@
 import { getContext, setContext } from "svelte";
-import type { UserData } from "./UserData.svelte";
+import { UserData } from "./UserData.svelte";
+import type { Imageboard } from "../imageboard/Imageboard.svelte";
+import type { User } from "lucia";
+
+interface UsersDeps {
+  imageboardState: Imageboard;
+  currentUser: User | null;
+}
 
 export class Users {
+  private imageboardState: Imageboard;
   users: Map<string, UserData> = $state(new Map());
   currentUserData: UserData | null = $state(null);
 
-  constructor(currentUserData: UserData | null) {
+  constructor(deps: UsersDeps) {
     console.log('[Users] Constructed');
+    this.imageboardState = deps.imageboardState;
     // set currentUserData if exists
-    if (currentUserData) {
-      this.currentUserData = currentUserData;
-      this.addUserData(currentUserData);
+    if (deps.currentUser) {
+      this.currentUserData = new UserData({
+        userId: deps.currentUser.id,
+        username: deps.currentUser.username,
+      }, this.imageboardState);
+      this.addUserData(this.currentUserData);
     }
   }
 
@@ -25,8 +37,8 @@ export class Users {
 
 const USERS_CTX = 'USERS_CTX';
 
-export function setUsersState(currentUserData: UserData | null) {
-  const usersState = new Users(currentUserData);
+export function setUsersState(deps: UsersDeps) {
+  const usersState = new Users(deps);
   setContext(USERS_CTX, usersState);
   return usersState;
 }

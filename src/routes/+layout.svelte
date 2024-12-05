@@ -9,11 +9,16 @@
   import { setImageboardState, type Imageboard } from '$lib/client/imageboard/Imageboard.svelte';
   import { setAuthModalState } from '$lib/components/AuthModal/AuthModalState.svelte';
   import type { LayoutData } from './$types';
+  import { setUsersState, type Users } from '$lib/client/users/Users.svelte';
 
   let { children, data }: { children: Snippet; data: LayoutData } = $props();
 
   const wsStore: WebSocketStore = setWsStore();
   const imageboardState: Imageboard = setImageboardState();
+  const usersState: Users = setUsersState({
+    currentUser: data.user,
+    imageboardState
+  });
   imageboardState.addPosts(data.initialPosts);
   WebSocketClient.initialize(wsStore, imageboardState);
   setAuthModalState();

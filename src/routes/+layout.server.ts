@@ -4,8 +4,12 @@ import type { LayoutServerLoad } from "./$types";
 
 export const load: LayoutServerLoad = async ({ locals }) => {
   let initialPosts: posts_new[] = [];
+
   try {
     initialPosts = await imageboardService.getContent(null, 1, 5);
+    if (locals.user) {
+      console.log('User exists');
+    }
   } catch (err) {
     console.error('Error fetching initial posts:', err);
   }

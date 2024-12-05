@@ -1,7 +1,9 @@
 import type { Imageboard } from "$lib/client/imageboard/Imageboard.svelte";
+import type { UserData } from "$lib/client/users/UserData.svelte";
+import type { Users } from "$lib/client/users/Users.svelte";
 import type DomainHandler from "$lib/shared/DomainHandler";
 import type { UserServerAction } from "$lib/types/ws/actions/user";
-import type { UserMessage } from "$lib/types/ws/messages/user";
+import type { UserDataResponse, UserMessage } from "$lib/types/ws/messages/user";
 import type { WebSocket } from "ws";
 
 export class UserHandlerError extends Error {
@@ -17,7 +19,7 @@ export class UserHandlerError extends Error {
 
 // TODO: Register this domain in MessageProcessor
 export class UserDomainHandler implements DomainHandler<UserMessage> {
-  private usersState?: string;
+  private usersState?: Users;
   private imageboardState?: Imageboard;
   private logger: Console;
 
@@ -25,7 +27,7 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
     this.logger = logger;
   }
 
-  init(deps: { usersState: string, imageboardState: Imageboard }) {
+  init(deps: { usersState: Users, imageboardState: Imageboard }) {
     this.usersState = deps.usersState;
     this.imageboardState = deps.imageboardState;
   }
@@ -43,6 +45,11 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
             data: UserServerAction['posts_response'];
           };
           await this.handlePostsResponse(contentMessage);
+          return;
+        }
+        case 'user_data_response': {
+          const responseMessage = message as UserDataResponse;
+          await this.handleDataResponse(responseMessage);
           return;
         }
         case 'error': {
@@ -102,5 +109,30 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
         { err }
       );
     }
+  }
+
+  private async handleDataResponse(message: UserDataResponse): Promise<void> {
+    // Validate inputs
+    if (!message.data.userId || !message.data.username) {
+      throw new UserHandlerError('Missing required field: userId and username must be provided');
+    }
+
+    if (!this.usersState) {
+      throw new UserHandlerError('Users state not initialized');
+    }
+
+    // Type assertion since we know userId is non-null from check above
+    const userId = message.data.userId as string;
+    const userData = this.usersState.users.get(userId);
+
+    if (!userData) {
+      throw new UserHandlerError('User data not found');
+    }
+
+    // Set user data with non-null values
+    userData.id = {
+      username: message.data.username as string,
+      userId: userId
+    };
   }
 }

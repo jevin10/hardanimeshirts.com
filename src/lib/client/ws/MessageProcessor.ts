@@ -2,6 +2,8 @@ import type { BaseWSMessage } from "$lib/types/ws/messages/base";
 import type DomainHandler from "$lib/shared/DomainHandler";
 import { ImageboardDomainHandler } from "./domains/imageboard/ImageboardDomainHandler.svelte";
 import type { Imageboard } from "../imageboard/Imageboard.svelte";
+import { UserDomainHandler } from "./domains/user/UserDomainHandler.svelte";
+import type { Users } from "../users/Users.svelte";
 
 export class HandlerInitializationError extends Error {
   constructor(domain: string, cause?: Error) {
@@ -28,6 +30,7 @@ export class UnknownDomainError extends Error {
 
 interface MessageProcessorDeps {
   imageboardState: Imageboard;
+  usersState: Users;
 }
 
 export class MessageProcessor {
@@ -59,12 +62,15 @@ export class MessageProcessor {
   private registerHandlers(): void {
     try {
       const imageboardHandler = new ImageboardDomainHandler();
+      const userHandler = new UserDomainHandler();
       try {
         imageboardHandler.init?.(this.deps);
+        userHandler.init?.(this.deps);
       } catch (error) {
         throw new HandlerInitializationError('imageboard', error instanceof Error ? error : undefined);
       }
       this.domainHandlers.set('imageboard', imageboardHandler);
+      this.domainHandlers.set('user', userHandler);
     } catch (error) {
       this.logger.error('Handler registration failed:', error);
       throw error;

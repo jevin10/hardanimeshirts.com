@@ -10,4 +10,13 @@ export class UserRepositoryImpl implements UserRepository {
     });
     return id;
   }
+
+  // gets username, returns null if not found
+  async getUsername(userId: string): Promise<string | null> {
+    const { username } = await prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { username: true }
+    });
+    return username;
+  }
 }

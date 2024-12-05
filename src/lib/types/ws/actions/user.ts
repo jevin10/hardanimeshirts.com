@@ -81,6 +81,11 @@ export const responseSchemas = {
     soulPoints: z.number()
   }),
 
+  userData: z.object({
+    userId: z.string().nullable(),
+    username: z.string().nullable()
+  }),
+
   error: z.object({
     code: z.string(),
     message: z.string(),
@@ -97,6 +102,7 @@ type PayloadTypes = {
   UpdateUserPfp: z.infer<typeof requestSchemas.updatePfp>;
   // Response payloads
   ProgressResponse: z.infer<typeof responseSchemas.progress>;
+  UserDataResponse: z.infer<typeof responseSchemas.userData>;
   PostsResponse: z.infer<typeof responseSchemas.posts>;
   PfpResponse: z.infer<typeof responseSchemas.pfp>;
   BadgesResponse: z.infer<typeof responseSchemas.badges>;
@@ -106,6 +112,7 @@ type PayloadTypes = {
 // Action Types
 export type UserClientAction = {
   'request_progress': PayloadTypes['RequestUserData'];
+  'request_user_data': PayloadTypes['RequestUserData'];
   'request_posts': PayloadTypes['RequestUserPosts'];
   'request_pfp': PayloadTypes['RequestUserData'];
   'request_badges': PayloadTypes['RequestUserData'];
@@ -120,6 +127,7 @@ export type UserServerAction = {
   'pfp_response': PayloadTypes['PfpResponse'];
   'badges_response': PayloadTypes['BadgesResponse'];
   'soul_points_response': PayloadTypes['SoulPointsResponse'];
+  'user_data_response': PayloadTypes['UserDataResponse'];
   'error': z.infer<typeof responseSchemas.error>;
 };
 

@@ -4,6 +4,7 @@ import type { WebSocketStore } from '$lib/stores/websocket';
 import type { posts_new } from "@prisma/client";
 import type { ImageboardServerAction } from "$lib/types/ws/actions/imageboard";
 import type { Imageboard } from "$lib/client/imageboard/Imageboard.svelte";
+import type { Users } from "$lib/client/users/Users.svelte";
 
 // Custom error class for domain-specific errors
 export class ImageboardHandlerError extends Error {
@@ -25,7 +26,7 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
     this.logger = logger;
   }
 
-  init(deps: { imageboardState: Imageboard }) {
+  init(deps: { imageboardState: Imageboard, usersState: Users }) {
     this.imageboardState = deps.imageboardState;
   }
 

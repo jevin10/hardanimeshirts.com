@@ -34,4 +34,14 @@ export class UserService {
     }
     return userId;
   }
+
+  async getUsername(userId: string): Promise<string> {
+    const username: string | null = await this.userRepository.getUsername(userId);
+    if (!username) {
+      throw error(404, 'User not found');
+    }
+    return username;
+  }
+
+
 }

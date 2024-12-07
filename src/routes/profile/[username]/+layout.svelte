@@ -4,7 +4,11 @@
   import { getUsersState, type Users } from '$lib/client/users/Users.svelte';
   import { getWsStore, type WebSocketStore } from '$lib/stores/websocket';
   import { calculateCurrentLevelProgress } from '$lib/shared/user/levelCalculations';
-  import type { RequestProgressMessage, RequestUserDataMessage } from '$lib/types/ws/messages/user';
+  import type {
+    RequestPostsMessage,
+    RequestProgressMessage,
+    RequestUserDataMessage
+  } from '$lib/types/ws/messages/user';
   import type { UserData } from '$lib/client/users/UserData.svelte';
   import type { LevelProgress } from '$lib/types/user/progress';
   import { formatRelativeTime } from '$lib/utils/formatRelativeTime';
@@ -37,6 +41,16 @@
     data: { username: $page.params.username }
   });
 
+  wsStore.send<RequestPostsMessage>({
+    domain: 'user',
+    action: 'request_posts',
+    data: {
+      username: $page.params.username,
+      page: 1,
+      limit: 5
+    }
+  });
+
   $effect(() => {
     userData = usersState.users.get($page.params.username);
   });
@@ -47,8 +61,9 @@
 </div>
 
 <div class="mx-5 mt-5">
+  <div class="text-3xl">{$page.params.username}</div>
+
   {#if userData}
-    <div class="text-3xl">{$page.params.username}</div>
     <div class="text-sm italic">
       Last seen:
       {#if userData.posts[0].latest_activity}
@@ -59,7 +74,11 @@
     </div>
     <div class="my-1 font-sans">
       <div class="text-sm">
-        Level {userData.progress.level}
+        {#if userData.progress.level === 0}
+          Level ...
+        {:else}
+          Level {userData.progress.level}
+        {/if}
       </div>
       <div class="max-w-sm h-1.1 border border-black dark:border-white">
         <div
@@ -74,6 +93,12 @@
 
     {@render children()}
   {:else}
-    <div class="text-xl">Loading profile...</div>
+    <div class="text-sm italic">Last seen: ...</div>
+    <div class="my-1 font-sans">
+      <div class="text-sm">Level ...</div>
+      <div class="max-w-sm h-1.1 border border-black dark:border-white">
+        <div class="bg-black dark:bg-white h-1 transition-all duration-500" style="width: 0%"></div>
+      </div>
+    </div>
   {/if}
 </div>

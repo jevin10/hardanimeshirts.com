@@ -1,7 +1,14 @@
-export function formatRelativeTime(date: Date): string {
+export function formatRelativeTime(dateInput: Date | string | number): string {
+  // Ensure we have a Date object
+  const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
+
+  // Validate the date is valid
+  if (isNaN(date.getTime())) {
+    return 'invalid date';
+  }
+
   const now = new Date();
   const diff = now.getTime() - date.getTime();
-
   const seconds = Math.floor(diff / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);

@@ -1,5 +1,5 @@
 import prisma from "$lib/prisma";
-import type { UserProgress } from "@prisma/client";
+import type { posts_new, UserProgress } from "@prisma/client";
 import type UserRepository from "./UserRepository";
 
 export class UserRepositoryImpl implements UserRepository {
@@ -40,5 +40,24 @@ export class UserRepositoryImpl implements UserRepository {
     });
 
     return result;
+  }
+
+  async getUserPosts(username: string, page: number, limit: number): Promise<posts_new[]> {
+    // Calculate offset for pagination
+    const offset = (page - 1) * limit;
+
+    // Get parent posts (where parent_id is null)
+    const parentPosts = await prisma.posts_new.findMany({
+      where: {
+        user_id: username
+      },
+      orderBy: {
+        created_at: 'desc'
+      },
+      take: limit,
+      skip: offset
+    });
+
+    return parentPosts;
   }
 }

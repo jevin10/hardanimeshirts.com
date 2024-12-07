@@ -1,6 +1,6 @@
 import { UserService } from "$lib/server/user/UserService";
 import type DomainHandler from "$lib/shared/DomainHandler";
-import type { RequestProgressMessage, RequestUserDataMessage, UserDataResponse, UserMessage, UserProgressResponse } from "$lib/types/ws/messages/user";
+import type { RequestPostsMessage, RequestProgressMessage, RequestUserDataMessage, UserDataResponse, UserMessage, UserPostsResponse, UserProgressResponse } from "$lib/types/ws/messages/user";
 import type { WebSocket } from "ws";
 import { WebSocketManager } from "../../WebSocketManager";
 import { UserHandlerError } from "$lib/client/ws/domains/user/UserDomainHandler.svelte";
@@ -39,6 +39,10 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
         case 'request_progress': {
           const requestMessage = message as RequestProgressMessage;
           return this.requestProgress(requestMessage);
+        }
+        case 'request_posts': {
+          const requestMessage = message as RequestPostsMessage;
+          return this.requestPosts(requestMessage);
         }
       }
     } catch (err) {
@@ -101,5 +105,24 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
         { err }
       )
     };
+  }
+
+  private async requestPosts(message: RequestPostsMessage): Promise<UserPostsResponse> {
+    try {
+      const result = await this.userService.getUserPosts(message.data);
+      return {
+        domain: 'user',
+        action: 'posts_response',
+        data: {
+          ...result
+        }
+      }
+    } catch (err) {
+      throw new UserHandlerError(
+        'Failed to get retrieve posts',
+        'POSTS_ERROR',
+        { err }
+      )
+    }
   }
 }

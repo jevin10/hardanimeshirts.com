@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import { getAuthModalState } from './AuthModalState.svelte';
 
   interface Props {
@@ -67,7 +68,14 @@
     </div>
     <div class="my-5 flex justify-center text-center">
       <div class="text-xs">
-        By continuing, you agree to the <button class="link">rules</button>.
+        By continuing, you agree to the <button
+          class="link"
+          onclick={() => {
+            goto('/rules');
+            errorMessage = '';
+            authModalState.closeModal();
+          }}>rules</button
+        >.
       </div>
     </div>
   </div>
@@ -118,7 +126,14 @@
     </div>
     <div class="my-5 flex justify-center text-center">
       <div class="text-xs">
-        By continuing, you agree to the <button class="link">rules</button>.
+        By continuing, you agree to the <button
+          class="link"
+          onclick={() => {
+            goto('/rules');
+            errorMessage = '';
+            authModalState.closeModal();
+          }}>rules</button
+        >.
       </div>
     </div>
   </div>

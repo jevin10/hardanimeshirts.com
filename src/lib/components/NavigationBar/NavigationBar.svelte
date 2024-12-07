@@ -85,12 +85,7 @@
     </div>
     <div class="nav-link flex space-x-1 items-center">
       <ThemeToggle />
-      <button
-        class={`nav-link ${isActive('/menu') ? 'underline' : ''}`}
-        onclick={() => navigate('/menu')}
-      >
-        [menu]
-      </button>
+      <button class={`nav-link`}> [menu] </button>
     </div>
   </nav>
   <div class="flex flex-row justify-between pt-1 px-1 text-xs bg-white dark:bg-black">

@@ -1,6 +1,5 @@
 <script lang="ts">
-  import KissAnimeAd from '$lib/img/ads/KissAnime1.png';
-
+  import NousResearchAd from '$lib/img/ads/NousResearch1.png';
   let flashMessage = $state('');
   let showFlash = $state(false);
 
@@ -45,11 +44,13 @@
 
   <!-- Main container -->
   <div class="relative overflow-hidden border-black dark:border-white border">
-    <img
-      src={KissAnimeAd}
-      alt="KissAnime: The best site to watch anime online for free!"
-      class="w-full animate-bounce-zoom origin-center"
-    />
+    <a href="https://nousresearch.com/hermes3/" target="_blank" rel="noopener noreferrer">
+      <img
+        src={NousResearchAd}
+        alt="Nous Research Presents: Hermes 3"
+        class="w-full origin-center cursor-pointer"
+      />
+    </a>
   </div>
 
   <!-- Bottom tab button -->
@@ -58,24 +59,8 @@
            bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700
            text-[10px] px-2 py-0.5 rounded-b-sm text-gray-600 dark:text-gray-300
            border border-black dark:border-white border-t-0 font-sans"
-    onclick={() => showMessage("Don't you dare.")}
+    onclick={() => showMessage('You cant!')}
   >
     Report this ad
   </button>
 </div>
-
-<style>
-  @keyframes bounce-zoom {
-    0%,
-    100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.05);
-    }
-  }
-
-  .animate-bounce-zoom {
-    animation: bounce-zoom 3s infinite ease-in-out;
-  }
-</style>

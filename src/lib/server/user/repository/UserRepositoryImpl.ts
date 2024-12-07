@@ -1,4 +1,5 @@
 import prisma from "$lib/prisma";
+import type { UserProgress } from "@prisma/client";
 import type UserRepository from "./UserRepository";
 
 export class UserRepositoryImpl implements UserRepository {
@@ -18,5 +19,26 @@ export class UserRepositoryImpl implements UserRepository {
       select: { username: true }
     });
     return username;
+  }
+
+  // gets UserProgress
+  // takes either userId or username
+  async getUserProgress(userId?: string, username?: string): Promise<UserProgress> {
+    if (!userId && !username) {
+      throw new Error('Either userId or username must be provided');
+    }
+
+    const result = await prisma.userProgress.findFirstOrThrow({
+      where: {
+        User: {
+          OR: [
+            { id: userId },
+            { username: username }
+          ]
+        }
+      }
+    });
+
+    return result;
   }
 }

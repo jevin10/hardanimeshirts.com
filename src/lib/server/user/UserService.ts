@@ -9,6 +9,8 @@
 import { error } from "@sveltejs/kit";
 import type UserRepository from "./repository/UserRepository";
 import { UserRepositoryImpl } from "./repository/UserRepositoryImpl";
+import type { UserProgress } from "@prisma/client";
+import type { UserClientAction, UserServerAction } from "$lib/types/ws/actions/user";
 
 export class UserService {
   private static instance: UserService;
@@ -43,5 +45,24 @@ export class UserService {
     return username;
   }
 
+  async getUserProgress(params: UserClientAction['request_progress']): Promise<UserServerAction['progress_response']> {
+    const { userId, username } = params;
+    if (!userId && !username) {
+      throw error(400, 'Either userId or username must be provided');
+    }
 
+    const userProgress = await this.userRepository.getUserProgress(userId, username);
+
+    // get userId or username if either are undefined
+    const [resolvedUserId, resolvedUsername] = await Promise.all([
+      userId || this.getUserId(username!),
+      username || this.getUsername(userId!)
+    ]);
+
+    return {
+      ...userProgress,
+      userId: resolvedUserId,
+      username: resolvedUsername
+    }
+  }
 }

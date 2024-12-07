@@ -2,9 +2,11 @@ import type { Imageboard } from "$lib/client/imageboard/Imageboard.svelte";
 import type { UserData } from "$lib/client/users/UserData.svelte";
 import type { Users } from "$lib/client/users/Users.svelte";
 import type DomainHandler from "$lib/shared/DomainHandler";
-import type { UserServerAction } from "$lib/types/ws/actions/user";
-import type { UserDataResponse, UserMessage } from "$lib/types/ws/messages/user";
+import { calculateCurrentLevelProgress } from "$lib/shared/user/levelCalculations";
+import { responseSchemas, type UserServerAction } from "$lib/types/ws/actions/user";
+import type { UserDataResponse, UserMessage, UserProgressResponse } from "$lib/types/ws/messages/user";
 import type { WebSocket } from "ws";
+import { ZodError } from "zod";
 
 export class UserHandlerError extends Error {
   constructor(
@@ -50,6 +52,11 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
         case 'user_data_response': {
           const responseMessage = message as UserDataResponse;
           await this.handleDataResponse(responseMessage);
+          return;
+        }
+        case 'progress_response': {
+          const responseMessage = message as UserProgressResponse;
+          await this.handleProgressResponse(responseMessage);
           return;
         }
         case 'error': {
@@ -127,7 +134,7 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
     let userData = this.usersState.users.get(username);
 
     if (!userData) {
-      console.log('UserData not found, creating user data');
+      console.log(`[HandleDataResponse] UserData ${username} not found, creating user data`)
       userData = this.usersState?.createUserData(userId, username);
     } else {
       // Set user data with non-null values
@@ -136,5 +143,43 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
         userId
       };
     }
+  }
+
+  private async handleProgressResponse(message: UserProgressResponse): Promise<void> {
+    try {
+      // validate the message
+      const validatedMessage = responseSchemas.progress.parse(message.data);
+      const { userId, username } = validatedMessage;
+
+      let userData = this.getOrCreateUserData(userId, username);
+
+      // get currentLevelXp and xpBetweenLevels
+      const { currentLevelXp, xpBetweenLevels } = calculateCurrentLevelProgress(userData.progress.currentXp);
+
+      // set data
+      userData.progress = {
+        level: validatedMessage.level,
+        currentXp: validatedMessage.currentXp,
+        toNextLevel: xpBetweenLevels - currentLevelXp
+      }
+    } catch (err) {
+      throw new UserHandlerError(
+        'Failed to update progress for user',
+        'PROGRESS_ERROR',
+        { err }
+      );
+    }
+  }
+
+  private getOrCreateUserData(userId: string, username: string): UserData {
+    console.log(`getting userData for ${username}`);
+    if (!this.usersState) {
+      throw new UserHandlerError('Users state not initialized');
+    }
+    const userData = this.usersState.users.get(username);
+    if (userData) return userData;
+
+    console.log(`UserData ${username} not found, creating user data`);
+    return this.usersState.createUserData(userId, username);
   }
 }

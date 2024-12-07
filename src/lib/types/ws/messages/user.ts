@@ -12,7 +12,17 @@ export type RequestUserDataMessage = UserMessage & {
   data: UserClientAction['request_user_data'];
 };
 
+export type RequestProgressMessage = UserMessage & {
+  action: 'request_progress';
+  data: UserClientAction['request_progress'];
+}
+
 export type UserDataResponse = UserMessage & {
   action: 'user_data_response';
   data: UserServerAction['user_data_response'];
 };
+
+export type UserProgressResponse = UserMessage & {
+  action: 'progress_response';
+  data: UserServerAction['progress_response'];
+}

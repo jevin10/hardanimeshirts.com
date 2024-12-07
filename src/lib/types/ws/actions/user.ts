@@ -40,11 +40,12 @@ export const requestSchemas = {
 export const responseSchemas = {
   progress: z.object({
     userId: z.string(),
+    username: z.string(),
     level: z.number(),
     currentXp: z.number(),
-    createdAt: z.date(),
-    updatedAt: z.date()
-  }) satisfies z.ZodType<UserProgress>,
+    createdAt: z.string().transform((str) => new Date(str)),
+    updatedAt: z.string().transform((str) => new Date(str)),
+  }),
 
   posts: z.array(
     z.object({

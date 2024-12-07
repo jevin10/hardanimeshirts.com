@@ -1,9 +1,11 @@
 import { UserService } from "$lib/server/user/UserService";
 import type DomainHandler from "$lib/shared/DomainHandler";
-import type { RequestUserDataMessage, UserDataResponse, UserMessage } from "$lib/types/ws/messages/user";
+import type { RequestProgressMessage, RequestUserDataMessage, UserDataResponse, UserMessage, UserProgressResponse } from "$lib/types/ws/messages/user";
 import type { WebSocket } from "ws";
 import { WebSocketManager } from "../../WebSocketManager";
 import { UserHandlerError } from "$lib/client/ws/domains/user/UserDomainHandler.svelte";
+import { requestSchemas } from "$lib/types/ws/actions/user";
+import type { UserProgress } from "@prisma/client";
 
 export class UserDomainHandler implements DomainHandler<UserMessage> {
   private readonly userService: UserService;
@@ -33,6 +35,10 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
         case 'request_user_data': {
           const requestMessage = message as RequestUserDataMessage;
           return this.requestUserData(requestMessage);
+        }
+        case 'request_progress': {
+          const requestMessage = message as RequestProgressMessage;
+          return this.requestProgress(requestMessage);
         }
       }
     } catch (err) {
@@ -76,5 +82,24 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
         { err }
       );
     }
+  }
+
+  private async requestProgress(message: RequestProgressMessage): Promise<UserProgressResponse> {
+    try {
+      const result = await this.userService.getUserProgress(message.data);
+      return {
+        domain: 'user',
+        action: 'progress_response',
+        data: {
+          ...result
+        }
+      }
+    } catch (err) {
+      throw new UserHandlerError(
+        'Failed to get retrieve progress',
+        'PROGRESS_ERROR',
+        { err }
+      )
+    };
   }
 }

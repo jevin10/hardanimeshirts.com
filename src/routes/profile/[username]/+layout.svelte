@@ -1,4 +1,5 @@
 <script lang="ts">
+  import LoadingIcon from '~icons/eos-icons/bubble-loading';
   import { onMount, setContext, type Snippet } from 'svelte';
   import { page } from '$app/stores';
   import { getUsersState, type Users } from '$lib/client/users/Users.svelte';
@@ -47,7 +48,7 @@
     data: {
       username: $page.params.username,
       page: 1,
-      limit: 5
+      limit: 1
     }
   });
 
@@ -69,13 +70,15 @@
       {#if userData.posts[0].latest_activity}
         {formatRelativeTime(userData.posts[0].latest_activity)}
       {:else}
-        loading...
+        <LoadingIcon class="h-3 w-3 ml-1" />
       {/if}
     </div>
     <div class="my-1 font-sans">
       <div class="text-sm">
         {#if userData.progress.level === 0}
-          Level ...
+          <div class="text-sm flex flex-row justify-start items-end">
+            Level <LoadingIcon class="h-3 w-3 ml-1 mb-1" />
+          </div>
         {:else}
           Level {userData.progress.level}
         {/if}
@@ -91,11 +94,17 @@
       </div>
     </div>
 
-    {@render children()}
+    <div class="my-5">
+      {@render children()}
+    </div>
   {:else}
-    <div class="text-sm italic">Last seen: ...</div>
+    <div class="text-sm italic flex flex-row justify-start items-end">
+      Last seen: <LoadingIcon class="h-3 w-3 ml-1 mb-1" />
+    </div>
     <div class="my-1 font-sans">
-      <div class="text-sm">Level ...</div>
+      <div class="text-sm flex flex-row justify-start items-end">
+        Level <LoadingIcon class="h-3 w-3 ml-1 mb-1" />
+      </div>
       <div class="max-w-sm h-1.1 border border-black dark:border-white">
         <div class="bg-black dark:bg-white h-1 transition-all duration-500" style="width: 0%"></div>
       </div>

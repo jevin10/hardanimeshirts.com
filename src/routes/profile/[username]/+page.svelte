@@ -2,6 +2,7 @@
   import { page } from '$app/stores';
   import type { UserData } from '$lib/client/users/UserData.svelte';
   import { getUsersState, Users } from '$lib/client/users/Users.svelte';
+  import Content from '$lib/components/imageboard/post/Content.svelte';
   import { getContext } from 'svelte';
 
   const usersState: Users = getUsersState();
@@ -15,6 +16,9 @@
 
 <div>
   {#if userData}
-    {JSON.stringify(userData.posts)}
+    {userData.id.username} says:
+    <div class="border border-black dark:border-white p-2 max-w-fit text-lg">
+      {userData.posts[0].content}
+    </div>
   {/if}
 </div>

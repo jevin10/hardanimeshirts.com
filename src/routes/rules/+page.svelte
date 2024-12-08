@@ -6,7 +6,7 @@
 <div class="mt-10 flex flex-col items-center w-full px-3">
   <Banner />
   <PageTitle title={'rules & guidelines'} subtitle={''} />
-  <div class="text-base w-full md:w-[45rem]">
+  <div class="text-base w-full md:w-[45rem] my-5">
     The rules of our website are incredibly important! Civil obligations form the basis of any
     society's culture. Rules are enforced at the discretion of site moderation. Email bug reports
     and unban requests to
@@ -15,19 +15,15 @@
     >
   </div>
   <div class="flex flex-col items-center mt-5 gap-5 w-full md:w-[45rem]">
-    <div class="w-full gap-1 flex flex-col">
-      <div class="w-full border border-black dark:border-white text-xl p-2">
-        1. Age Requirements
-      </div>
-      <div class="w-full p-2">
+    <div class="w-full flex flex-col">
+      <div class="text-xs tracking-widest my-1 uppercase">Age requirements</div>
+      <div class="w-full">
         - Do not post in or view any boards if you are under 18 years of age.<br />
       </div>
     </div>
-    <div class="w-full gap-1 flex flex-col">
-      <div class="w-full border border-black dark:border-white text-xl p-2">
-        2. Posting Guidelines
-      </div>
-      <div class="w-full p-2">
+    <div class="w-full flex flex-col">
+      <div class="text-xs tracking-widest my-1 uppercase">Posting guidelines</div>
+      <div class="w-full">
         - Always argue in good faith. Avoid using personal attacks unless the user is particularly
         stupid.<br />
         - Do not interact with perceived bait.<br />
@@ -36,11 +32,9 @@
         includes "child models".
       </div>
     </div>
-    <div class="w-full gap-1 flex flex-col">
-      <div class="w-full border border-black dark:border-white text-xl p-2">
-        PRO TIPS FOR MAXIMUM FUN
-      </div>
-      <div class="w-full p-2">
+    <div class="w-full flex flex-col">
+      <div class="text-xs tracking-widest my-1 uppercase">pro tips for maximum fun</div>
+      <div class="w-full">
         - Be smart when posting about potentially illegal activities.<br />
         - You can talk about anything. Just make sure it's board appropriate!<br />
       </div>

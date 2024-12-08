@@ -3,6 +3,7 @@
   import { getUsersState, Users } from '$lib/client/users/Users.svelte';
   import { getMenuModalState, type MenuModalState } from './MenuModalState.svelte';
   import Invite from './pages/Invite.svelte';
+  import Policies from './pages/Policies.svelte';
 
   const menuModalState: MenuModalState = getMenuModalState();
   const currentUser: UserData | null = getUsersState().currentUserData;
@@ -14,7 +15,11 @@
   <div class="text-4xl">Main Menu</div>
   <div class="my-5 flex flex-col w-full items-start text-xl">
     <div class="text-xs tracking-widest my-1 uppercase">info</div>
-    <button>policies</button>
+    <button
+      onclick={() => {
+        menuModalState.page = 'Policies';
+      }}>policies</button
+    >
     <div class="my-5 w-full flex flex-col items-start">
       <div class="text-xs tracking-widest my-1 uppercase">extras</div>
       {#if currentUser}
@@ -44,6 +49,8 @@
               {@render mainPage()}
             {:else if menuModalState.page === 'Invite'}
               <Invite />
+            {:else if menuModalState.page === 'Policies'}
+              <Policies />
             {/if}
           </div>
         </div>

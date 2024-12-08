@@ -6,9 +6,11 @@
   import { getContext } from 'svelte';
   import type { User } from '@prisma/client';
   import ThemeToggle from './ThemeToggle.svelte';
+  import { getMenuModalState } from '../MenuModal/MenuModalState.svelte';
 
   const wsStore = getWsStore();
   const authModalState = getAuthModalState();
+  const menuModalState = getMenuModalState();
   let connected = $state(false);
 
   let user: User | null = getContext('USER_CTX');
@@ -85,7 +87,14 @@
     </div>
     <div class="nav-link flex space-x-1 items-center">
       <ThemeToggle />
-      <button class={`nav-link`}> [menu] </button>
+      <button
+        class={`nav-link`}
+        onclick={() => {
+          menuModalState.openModal();
+        }}
+      >
+        [menu]
+      </button>
     </div>
   </nav>
   <div class="flex flex-row justify-between pt-1 px-1 text-xs bg-white dark:bg-black">

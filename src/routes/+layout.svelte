@@ -3,13 +3,15 @@
   import { getWsStore, setWsStore, type WebSocketStore } from '$lib/stores/websocket';
   import { browser } from '$app/environment';
   import NavigationBar from '$lib/components/NavigationBar/NavigationBar.svelte';
-  import Modal from '$lib/components/AuthModal/Modal.svelte';
+  import AuthModal from '$lib/components/AuthModal/Modal.svelte';
+  import MenuModal from '$lib/components/MenuModal/Modal.svelte';
   import { WebSocketClient } from '$lib/client/ws/WebSocketClient';
   import { onDestroy, onMount, setContext, type Snippet } from 'svelte';
   import { setImageboardState, type Imageboard } from '$lib/client/imageboard/Imageboard.svelte';
   import { setAuthModalState } from '$lib/components/AuthModal/AuthModalState.svelte';
   import type { LayoutData } from './$types';
   import { setUsersState, type Users } from '$lib/client/users/Users.svelte';
+  import { setMenuModalState } from '$lib/components/MenuModal/MenuModalState.svelte';
 
   let { children, data }: { children: Snippet; data: LayoutData } = $props();
 
@@ -21,7 +23,10 @@
   });
   imageboardState.addPosts(data.initialPosts);
   WebSocketClient.initialize(wsStore, imageboardState, usersState);
+
+  // set modal states
   setAuthModalState();
+  setMenuModalState();
 
   setContext('USER_CTX', data.user);
 
@@ -68,7 +73,8 @@
 <div class="min-h-screen bg-white dark:bg-black text-black dark:text-white">
   {#if connectionState === 'ready'}
     <main class="h-full">
-      <Modal />
+      <AuthModal />
+      <MenuModal />
       <NavigationBar />
       <div class="flex w-full justify-center">
         <div class="max-w-6xl w-full">

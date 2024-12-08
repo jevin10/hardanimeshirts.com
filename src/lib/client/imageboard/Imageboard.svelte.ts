@@ -159,7 +159,9 @@ export class Imageboard {
    */
   async addPosts(posts: posts_new[]) {
     try {
+      console.log('adding posts:', JSON.stringify(posts));
       if (!posts.length) return;
+      console.log('this ran');
 
       // Step 1: Add unique posts to the store
       const uniquePosts = this.addUniquePostsToStore(posts);

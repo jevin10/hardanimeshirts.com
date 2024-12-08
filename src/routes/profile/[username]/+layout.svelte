@@ -67,10 +67,10 @@
   {#if userData}
     <div class="text-sm italic">
       Last seen:
-      {#if userData.posts[0].latest_activity}
+      {#if userData.posts.length > 0 && userData.posts[0].latest_activity}
         {formatRelativeTime(userData.posts[0].latest_activity)}
       {:else}
-        <LoadingIcon class="h-3 w-3 ml-1" />
+        never
       {/if}
     </div>
     <div class="my-1 font-sans">

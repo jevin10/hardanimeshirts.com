@@ -18,7 +18,10 @@
   {#if userData}
     {userData.id.username} says:
     <div class="border border-black dark:border-white p-2 max-w-fit text-lg">
-      {userData.posts[0].content}
+      I'm a lurker!
+      {#if userData.posts.length > 0}
+        {userData.posts[0].content}
+      {/if}
     </div>
   {/if}
 </div>

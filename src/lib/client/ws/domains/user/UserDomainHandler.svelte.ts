@@ -105,7 +105,7 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
   ): Promise<void> {
     const posts = message.data;
     if (!posts) {
-      return;
+      throw new UserHandlerError('No posts to push');
     }
     try {
       await this.imageboardState!.addPosts(posts);

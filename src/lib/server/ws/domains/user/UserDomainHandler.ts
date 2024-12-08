@@ -110,6 +110,7 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
   private async requestPosts(message: RequestPostsMessage): Promise<UserPostsResponse> {
     try {
       const result = await this.userService.getUserPosts(message.data);
+      console.log('recieved posts:', JSON.stringify(result));
       return {
         domain: 'user',
         action: 'posts_response',

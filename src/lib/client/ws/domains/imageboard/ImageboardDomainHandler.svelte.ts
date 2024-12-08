@@ -114,7 +114,7 @@ export class ImageboardDomainHandler implements DomainHandler<ImageboardMessage>
 
   private async pushPosts(params: { posts: posts_new[] }): Promise<void> {
     if (!params.posts) {
-      throw new ImageboardHandlerError('No posts to push');
+      return;
     }
     try {
       await this.imageboardState!.addPosts(params.posts);

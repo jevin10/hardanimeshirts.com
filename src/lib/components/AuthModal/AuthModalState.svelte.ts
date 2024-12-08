@@ -64,8 +64,8 @@ export class AuthModalState {
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || 'Signup failed');
+        const errorData = await response.json();
+        throw new Error(errorData.message);
       }
     } catch (err) {
       console.error('Signup submission failed:', err);

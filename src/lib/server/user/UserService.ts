@@ -9,6 +9,7 @@ import type UserRepository from "./repository/UserRepository";
 import { UserRepositoryImpl } from "./repository/UserRepositoryImpl";
 import type { User, UserProgress } from "@prisma/client";
 import { requestSchemas, type UserClientAction, type UserServerAction } from "$lib/types/ws/actions/user";
+import prisma from "$lib/prisma";
 
 export class UserService {
   private static instance: UserService;
@@ -67,6 +68,7 @@ export class UserService {
   async getUserPosts(params: UserClientAction['request_posts']): Promise<UserServerAction['posts_response']> {
     const { username, page, limit } = requestSchemas.posts.parse(params);
     const dbPosts = await this.userRepository.getUserPosts(username, page, limit);
+    console.log('Getting posts:', JSON.stringify(dbPosts));
 
     const posts: UserServerAction['posts_response'] = dbPosts.map(post => ({
       ...post,
@@ -77,10 +79,12 @@ export class UserService {
   }
 
   async createUser(userId: string, username: string, passwordHash: string): Promise<User> {
-    // create user in db
-    const user = await this.userRepository.createUser(userId, username, passwordHash);
-    // create UserProgress in db
-    await this.userRepository.createUserProgress(user.id);
-    return user;
+    return await prisma.$transaction(async (tx) => {
+      // create user in db
+      const user = await this.userRepository.createUser(userId, username, passwordHash, tx);
+      // create UserProgress in db
+      await this.userRepository.createUserProgress(user.id, undefined, undefined, tx);
+      return user;
+    });
   }
 }

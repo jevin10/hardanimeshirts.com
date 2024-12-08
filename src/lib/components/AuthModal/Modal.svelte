@@ -11,6 +11,7 @@
   let { display = 'Login' }: Props = $props();
 
   let errorMessage: string | null = $state(null);
+  let signupSuccess: boolean = $state(false);
 
   async function handleLoginSubmit() {
     try {
@@ -28,6 +29,8 @@
   async function handleSignupSubmit() {
     try {
       await authModalState.submitSignup();
+      errorMessage = '';
+      signupSuccess = true;
     } catch (err) {
       if (err instanceof Error) {
         errorMessage = err.message;
@@ -59,7 +62,7 @@
     </div>
     {#if errorMessage}
       <div class="my-5">
-        <div class="text-m text-red-400">{errorMessage}</div>
+        <div class="text-sm text-red-400">{errorMessage}</div>
       </div>
     {/if}
     <div class="my-5">
@@ -123,7 +126,12 @@
     </div>
     {#if errorMessage}
       <div class="my-5">
-        <div class="text-m text-red-400">{errorMessage}</div>
+        <div class="text-sm text-red-400">{errorMessage}</div>
+      </div>
+    {/if}
+    {#if signupSuccess}
+      <div class="my-5">
+        <div class="text-sm text-green-400">Signup successful! Login to continue.</div>
       </div>
     {/if}
     <div class="my-5">

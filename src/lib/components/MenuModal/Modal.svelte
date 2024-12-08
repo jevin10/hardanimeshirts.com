@@ -39,7 +39,7 @@
       </div>
       <div class="flex-1 flex items-center justify-center">
         <div class="m-3 w-[18rem] md:w-[24-rem]">
-          <div class="my-5">
+          <div class="my-5 h-[20rem]">
             {#if menuModalState.page === 'Main'}
               {@render mainPage()}
             {:else if menuModalState.page === 'Invite'}

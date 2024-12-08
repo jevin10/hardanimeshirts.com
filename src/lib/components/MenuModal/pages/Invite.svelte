@@ -2,8 +2,10 @@
   import CopyIcon from '~icons/tabler/copy';
   import type { UserData } from '$lib/client/users/UserData.svelte';
   import { getUsersState } from '$lib/client/users/Users.svelte';
+  import { getMenuModalState, type MenuModalState } from '../MenuModalState.svelte';
 
   const currentUser: UserData | null = getUsersState().currentUserData;
+  const menuModalState: MenuModalState = getMenuModalState();
   let inviteCode: string = $state('xxxxx-xxxxx-xxxxx');
   let errorMessage: string | null = $state(null);
   let showTooltip: boolean = $state(false);
@@ -45,30 +47,42 @@
 </script>
 
 {#if currentUser}
-  <div class="text-4xl">Invite Others</div>
-  <div class="text-base">Invite others to hardanimeshirts!</div>
-  <div class="mt-5">
-    <div class="text-xs uppercase tracking-widest">Invite code</div>
-    <div
-      class="border border-black dark:border-white p-1 mb-2 flex justify-between items-center relative"
-    >
-      <span>{inviteCode}</span>
-      <button onclick={copyToClipboard} class="relative" aria-label="Copy invite code">
-        <CopyIcon class="h-5 w-5" />
-        {#if showTooltip}
-          <div
-            class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-sm whitespace-nowrap"
-          >
-            Copied!
-          </div>
-        {/if}
-      </button>
+  <button
+    onclick={() => {
+      menuModalState.page = 'Main';
+    }}>[back]</button
+  >
+  <div class="flex flex-col gap-[3rem]">
+    <div>
+      <div class="text-lg my-1">Invite responsibly.</div>
+      <div class="text-sm">
+        With great power comes great responsibility. To ensure the quality of our board, please
+        refrain from inviting any normies.
+      </div>
     </div>
+    <div>
+      <div class="text-xs uppercase tracking-widest">Invite code</div>
+      <div
+        class="border border-black dark:border-white p-1 mb-2 flex justify-between items-center relative"
+      >
+        <span>{inviteCode}</span>
+        <button onclick={copyToClipboard} class="relative" aria-label="Copy invite code">
+          <CopyIcon class="h-5 w-5" />
+          {#if showTooltip}
+            <div
+              class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-sm whitespace-nowrap"
+            >
+              Copied!
+            </div>
+          {/if}
+        </button>
+      </div>
+      <button onclick={generateCode} class="text-2xl">[generate]</button>
+    </div>
+    {#if errorMessage}
+      <div class="my-5">
+        <div class="text-m text-red-400">{errorMessage}</div>
+      </div>
+    {/if}
   </div>
-  <button onclick={generateCode} class="text-2xl mt-5">[generate]</button>
-  {#if errorMessage}
-    <div class="my-5">
-      <div class="text-m text-red-400">{errorMessage}</div>
-    </div>
-  {/if}
 {/if}

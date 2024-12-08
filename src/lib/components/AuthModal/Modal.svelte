@@ -24,6 +24,18 @@
       }
     }
   }
+
+  async function handleSignupSubmit() {
+    try {
+      await authModalState.submitSignup();
+    } catch (err) {
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else {
+        errorMessage = 'An unexpected error occurred.';
+      }
+    }
+  }
 </script>
 
 {#snippet login()}
@@ -57,6 +69,7 @@
           class="link"
           onclick={() => {
             display = 'Sign Up';
+            errorMessage = '';
           }}
         >
           Sign up
@@ -108,6 +121,11 @@
         placeholder="invite code"
       />
     </div>
+    {#if errorMessage}
+      <div class="my-5">
+        <div class="text-m text-red-400">{errorMessage}</div>
+      </div>
+    {/if}
     <div class="my-5">
       <div class="text-m">
         Already have an account?
@@ -115,6 +133,7 @@
           class="link"
           onclick={() => {
             display = 'Login';
+            errorMessage = '';
           }}
         >
           Log in
@@ -122,7 +141,7 @@
       </div>
     </div>
     <div class="my-10 flex justify-center">
-      <button class="text-2xl">[sign up]</button>
+      <button class="text-2xl" onclick={handleSignupSubmit}>[sign up]</button>
     </div>
     <div class="my-5 flex justify-center text-center">
       <div class="text-xs">

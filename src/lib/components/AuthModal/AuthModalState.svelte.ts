@@ -50,6 +50,28 @@ export class AuthModalState {
       throw err; // Re-throw to handle in the UI
     }
   }
+
+  async submitSignup() {
+    try {
+      const formData = new FormData();
+      formData.append('username', this.signupForm.username);
+      formData.append('password', this.signupForm.password);
+      formData.append('inviteCode', this.signupForm.inviteCode);
+
+      const response = await fetch('/api/signup', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error?.message || 'Signup failed');
+      }
+    } catch (err) {
+      console.error('Signup submission failed:', err);
+      throw err;
+    }
+  }
 }
 
 const AUTHMODAL_CTX = 'AUTHMODAL_CTX';

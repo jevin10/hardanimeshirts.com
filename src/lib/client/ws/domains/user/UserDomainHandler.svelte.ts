@@ -134,7 +134,6 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
     let userData = this.usersState.users.get(username);
 
     if (!userData) {
-      console.log(`[HandleDataResponse] UserData ${username} not found, creating user data`)
       userData = this.usersState?.createUserData(userId, username);
     } else {
       // Set user data with non-null values
@@ -172,14 +171,12 @@ export class UserDomainHandler implements DomainHandler<UserMessage> {
   }
 
   private getOrCreateUserData(userId: string, username: string): UserData {
-    console.log(`getting userData for ${username}`);
     if (!this.usersState) {
       throw new UserHandlerError('Users state not initialized');
     }
     const userData = this.usersState.users.get(username);
     if (userData) return userData;
 
-    console.log(`UserData ${username} not found, creating user data`);
     return this.usersState.createUserData(userId, username);
   }
 }

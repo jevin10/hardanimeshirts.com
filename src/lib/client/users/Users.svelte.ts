@@ -15,7 +15,6 @@ export class Users {
   currentUserData: UserData | null = $state(null);
 
   constructor(deps: UsersDeps) {
-    console.log('[Users] Constructed');
     this.imageboardState = deps.imageboardState;
     // set currentUserData if exists
     if (deps.currentUser) {
@@ -38,10 +37,8 @@ export class Users {
 
   addUserData(userData: UserData) {
     if (this.users.has(userData.id.username)) {
-      console.log('[Users] UserData already exists in map, not adding');
       return;
     }
-    console.log('[Users] Adding UserData to map');
     this.users.set(userData.id.username, userData);
   }
 }

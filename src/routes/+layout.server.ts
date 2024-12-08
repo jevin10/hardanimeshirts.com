@@ -7,6 +7,8 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 
   try {
     initialPosts = await imageboardService.getContent(null, 1, 5);
+
+    // check if there's a user logged in
     if (locals.user) {
       console.log('User exists');
     }

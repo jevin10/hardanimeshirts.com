@@ -38,8 +38,9 @@
 		"@prisma/client": "^5.17.0",
 		"@types/ws": "^8.5.13",
 		"lucia": "^3.2.0",
-		"ws": "^8.18.0",
+		"random-words": "^2.0.1",
 		"tsm": "^2.3.0",
+		"ws": "^8.18.0",
 		"zod": "^3.23.8"
 	},
 	"optionalDependencies": {

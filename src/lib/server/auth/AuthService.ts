@@ -4,7 +4,8 @@ import { verify } from "@node-rs/argon2";
 import { lucia } from "../auth";
 import type { Cookies, RequestEvent } from "@sveltejs/kit";
 import { ZodError } from "zod";
-import { Prisma } from "@prisma/client";
+import { Prisma, type InviteCode } from "@prisma/client";
+import { generate } from "random-words";
 
 export class AuthService {
   private static instance: AuthService;
@@ -76,5 +77,63 @@ export class AuthService {
     // Validate input 
     const validated = signupSchema.parse(input);
     console.log('Signed up with:', validated);
+  }
+
+
+  async generateInviteCode(userId: string): Promise<InviteCode> {
+    // Try to generate a unique code up to 5 times
+    for (let attempts = 0; attempts < 5; attempts++) {
+      const code = generate({
+        exactly: 3,
+        join: "-",
+        maxLength: 5
+      });
+
+      const match = await prisma.inviteCode.findFirst({
+        where: { code }
+      });
+
+      if (!match) {
+        // Create the invite code record
+        const inviteCode = await prisma.inviteCode.create({
+          data: {
+            code,
+            generatedBy: userId
+          }
+        });
+        return inviteCode;
+      }
+    }
+
+    // If we failed to generate a unique code after 5 attempts, throw an error
+    throw new Error('Failed to generate unique invite code after multiple attempts');
+  }
+
+  // returns a valid invite code
+  // returns null if invalid or doesnt exist
+  async validateInviteCode(code: string): Promise<InviteCode | null> {
+    const match = await prisma.inviteCode.findFirst({
+      where: {
+        code,
+        usedBy: null
+      }
+    });
+
+    return match;
+  }
+
+  // update an invite code that was used to generate a user
+  // usedBy is the userId of the person who used the invite code
+  async updateInviteCode(usedBy: string, code: InviteCode): Promise<InviteCode> {
+    const updatedCode = await prisma.inviteCode.update({
+      where: {
+        id: code.id
+      },
+      data: {
+        usedBy,
+        usedAt: new Date()
+      }
+    })
+    return updatedCode;
   }
 }

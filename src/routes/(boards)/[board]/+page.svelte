@@ -134,7 +134,12 @@
                 }}
                 class="w-full text-left hover:border-l-4 border-black dark:border-white hover:bg-gray-50 dark:hover:bg-zinc-950 transition-colors"
               >
-                <Thread parent={thread.parent} children={thread.children} locked={thread.locked} />
+                <Thread
+                  parent={thread.parent}
+                  children={thread.children}
+                  locked={thread.locked}
+                  expanded={false}
+                />
               </button>
             </div>
           {/each}

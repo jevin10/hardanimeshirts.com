@@ -31,7 +31,7 @@
       <button
         onclick={() => {
           navigate('/policies/shipping');
-        }}>Shipping Policy</button
+        }}>Shipping & Handling</button
       >
     </div>
   </div>

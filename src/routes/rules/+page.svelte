@@ -4,9 +4,8 @@
 </script>
 
 <div class="mt-10 flex flex-col items-center w-full px-3">
-  <Banner />
-  <PageTitle title={'rules & guidelines'} subtitle={''} />
-  <div class="text-base w-full md:w-[45rem] my-5">
+  <PageTitle title={'global rules'} subtitle={''} />
+  <div class="text-base w-full md:w-[45rem] mt-[3rem]">
     The rules of our website are incredibly important! Civil obligations form the basis of any
     society's culture. Rules are enforced at the discretion of site moderation. Email bug reports
     and unban requests to

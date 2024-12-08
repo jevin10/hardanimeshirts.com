@@ -10,6 +10,9 @@
   import SoldOutImage from '$lib/img/bannerimages/soldout.png';
   import SunKenImage from '$lib/img/bannerimages/sunken.png';
   import HomeGif from '$lib/img/has_top_25.gif';
+  import VoidImage from '$lib/img/bannerimages/voidImage.gif';
+  import AdventuresImage from '$lib/img/bannerimages/adventuresImage.gif';
+  import SeamsImage from '$lib/img/bannerimages/seamsImage.gif';
 
   const homeImages: string[] = [
     HomeGif,
@@ -33,27 +36,33 @@
   let currentImageIndex = 0;
   let intervalId: ReturnType<typeof setInterval>;
 
+  const specialRoutes = new Map([
+    ['/void', VoidImage],
+    ['/seams', SeamsImage],
+    ['/adventures', AdventuresImage]
+  ]);
+
   onMount(() => {
-    [...homeImages].forEach((src) => {
+    [...homeImages, ...specialRoutes.values()].forEach((src) => {
       const img = new Image();
       img.src = src;
     });
 
     intervalId = setInterval(() => {
       currentImageIndex = (currentImageIndex + 1) % homeImages.length;
-    }, 1000);
+    }, 5000);
   });
 
   onDestroy(() => {
     clearInterval(intervalId);
   });
 
-  $: currentImage = homeImages[currentImageIndex];
+  $: currentImage = specialRoutes.get($page.url.pathname) || homeImages[currentImageIndex];
 </script>
 
 <div class="border-none bg-transparent p-0">
   <img
-    class="block mx-auto h-40 md:h-48 border-2 border-black dark:invert"
+    class="block mx-auto h-40 md:h-48 border-2 border-black dark:border-white"
     src={currentImage}
     alt="She only loves me for my hard anime shirts."
   />

@@ -53,7 +53,7 @@
 
     intervalId = setInterval(() => {
       currentImageIndex = (currentImageIndex + 1) % homeImages.length;
-    }, 1000);
+    }, 5000);
   });
 
   onDestroy(() => {

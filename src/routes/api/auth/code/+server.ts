@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ locals }) => {
     const inviteCode = await authService.generateInviteCode(locals.session.userId);
 
     return json({
-      code: inviteCode,
+      code: inviteCode.code,
       message: 'Invite code generated successfully'
     }, {
       status: 201

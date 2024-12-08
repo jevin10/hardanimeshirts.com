@@ -2,12 +2,12 @@ import { getContext, setContext } from "svelte";
 
 export class MenuModalState {
   isVisible: boolean = $state(false);
-  page: 'main' | 'invite' = $state('main');
+  page: 'Main' | 'Invite' = $state('Main');
 
   constructor() { }
 
   closeModal() {
-    this.page = 'main';
+    this.page = 'Main';
     this.isVisible = false;
   }
 

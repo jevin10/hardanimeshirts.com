@@ -2,10 +2,28 @@
   import type { UserData } from '$lib/client/users/UserData.svelte';
   import { getUsersState, Users } from '$lib/client/users/Users.svelte';
   import { getMenuModalState, type MenuModalState } from './MenuModalState.svelte';
+  import Invite from './pages/Invite.svelte';
 
   const menuModalState: MenuModalState = getMenuModalState();
   const currentUser: UserData | null = getUsersState().currentUserData;
+
+  const inviteCode: string = $state('xxxxx-xxxxx-xxxxx');
 </script>
+
+{#snippet mainPage()}
+  <div class="text-4xl">Main Menu</div>
+  <div class="my-5 flex flex-col w-full items-start text-xl">
+    <div class="text-xs tracking-widest my-1 uppercase">info</div>
+    <button>policies</button>
+    <div class="my-5 w-full flex flex-col items-start">
+      <div class="text-xs tracking-widest my-1 uppercase">extras</div>
+      {#if currentUser}
+        <button onclick={() => (menuModalState.page = 'Invite')}>invite others</button>
+      {/if}
+      <button>toggle ads</button>
+    </div>
+  </div>
+{/snippet}
 
 {#if menuModalState.isVisible}
   <div class="overlay">
@@ -22,9 +40,10 @@
       <div class="flex-1 flex items-center justify-center">
         <div class="m-3 w-[18rem] md:w-[24-rem]">
           <div class="my-5">
-            <div class="text-4xl">Menu</div>
-            {#if currentUser}
-              <div class="text-base">Logged in as {currentUser.id.username}</div>
+            {#if menuModalState.page === 'Main'}
+              {@render mainPage()}
+            {:else if menuModalState.page === 'Invite'}
+              <Invite />
             {/if}
           </div>
         </div>

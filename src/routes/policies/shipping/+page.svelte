@@ -4,7 +4,7 @@
   import { goto } from '$app/navigation';
 </script>
 
-<div class="mt-10 flex flex-col items-center w-full px-3">
+<div class="my-10 flex flex-col items-center w-full px-3">
   <PageTitle title={'shipping & handling'} subtitle={''} />
   <div class="flex flex-col items-start mt-[3rem] gap-5 w-full md:w-[45rem]">
     <div class="mb-[1rem]">

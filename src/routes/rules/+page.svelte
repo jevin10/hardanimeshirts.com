@@ -7,11 +7,7 @@
   <PageTitle title={'global rules'} subtitle={''} />
   <div class="text-base w-full md:w-[45rem] mt-[3rem]">
     The rules of our website are incredibly important! Civil obligations form the basis of any
-    society's culture. Rules are enforced at the discretion of site moderation. Email bug reports
-    and unban requests to
-    <a href="mailto:admin@hardanimeshirts.com" class="link" target="_blank"
-      >admin@hardanimeshirts.com</a
-    >
+    society's culture. Rules are enforced at the discretion of site moderation.
   </div>
   <div class="flex flex-col items-center mt-5 gap-5 w-full md:w-[45rem]">
     <div class="w-full flex flex-col">
@@ -36,6 +32,20 @@
       <div class="w-full">
         - Be smart when posting about potentially illegal activities.<br />
         - You can talk about anything. Just make sure it's board appropriate!<br />
+      </div>
+    </div>
+    <div class="my-[3rem] flex flex-col items-center gap-5">
+      <div class="flex flex-col items-center">
+        <div class="text-3xl">suggest a rule</div>
+        <a href="mailto:admin@hardanimeshirts.com" class="link my-1 text-xl" target="_blank"
+          >admin@hardanimeshirts.com</a
+        >
+      </div>
+      <div class="flex flex-col my-1 items-center">
+        <div class="text-3xl">complain about a rule</div>
+        <a href="https://www.adl.org/contact" class="link my-1 text-xl" target="_blank"
+          >adl.org/contact</a
+        >
       </div>
     </div>
   </div>

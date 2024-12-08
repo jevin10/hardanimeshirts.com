@@ -25,7 +25,7 @@
       {#if currentUser}
         <button onclick={() => (menuModalState.page = 'Invite')}>invite others</button>
       {/if}
-      <button>toggle ads</button>
+      <a href="https://x.com/tunahorse21" target="_blank">careers</a>
     </div>
   </div>
 {/snippet}

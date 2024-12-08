@@ -1,4 +1,5 @@
 import prisma from "$lib/prisma";
+import { InviteCodeError } from "$lib/types/auth/errors";
 import type { InviteCode } from "@prisma/client";
 import { generate } from "random-words";
 
@@ -41,10 +42,10 @@ export async function validateInviteCode(code: string): Promise<InviteCode> {
   });
 
   if (!match) {
-    throw new Error("Invite code doesn't exist");
+    throw new InviteCodeError("Invite code doesn't exist");
     // check if the invite code has already been used
   } else if (match.usedBy) {
-    throw new Error("Invite code has already been used");
+    throw new InviteCodeError("Invite code has already been used");
   }
 
   // Check if code is more than 2 weeks old
@@ -52,7 +53,7 @@ export async function validateInviteCode(code: string): Promise<InviteCode> {
   twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
 
   if (match.createdAt < twoWeeksAgo) {
-    throw new Error("Invite code expired");
+    throw new InviteCodeError("Invite code expired");
   }
 
   return match;

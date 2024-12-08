@@ -9,6 +9,7 @@ import { generate } from "random-words";
 import { generateIdFromEntropySize } from "lucia";
 import { UserService } from "../user/UserService";
 import { generateInviteCode, updateInviteCode, validateInviteCode } from "./utils/inviteCode";
+import { SignupError } from "$lib/types/auth/errors";
 
 export class AuthService {
   private static instance: AuthService;
@@ -80,37 +81,45 @@ export class AuthService {
   }
 
   async signup(input: SignupInput): Promise<void> {
-    const { username, password, inviteCode } = input;
+    try {
+      const { username, password, inviteCode } = input;
 
-    // get a user that matches the username
-    const existingUser = await prisma.user.findUnique({
-      where: { username }
-    })
-    // if a user with the username exists, throw error
-    if (existingUser) {
-      throw new Error('Username already taken');
+      // get a user that matches the username
+      const existingUser = await prisma.user.findUnique({
+        where: { username }
+      })
+      // if a user with the username exists, throw error
+      if (existingUser) {
+        throw new Error('Username already taken');
+      }
+
+      // validate the invite code
+      const validCode = await validateInviteCode(inviteCode);
+
+      // generate a userId
+      const userId = generateIdFromEntropySize(10);
+      // generate passwordHash
+      const passwordHash = await hash(password, {
+        memoryCost: 19456,
+        timeCost: 2,
+        outputLen: 32,
+        parallelism: 1
+      });
+
+      // create user
+      const user: User = await this.userService.createUser(userId, username, passwordHash);
+
+      // update the invite code to used
+      const updatedCode = await updateInviteCode(user.id, validCode);
+
+      console.log('Signed up with:', { username, password, inviteCode });
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new SignupError(input, err);
+      } else {
+        throw new SignupError(input, new Error('Unknown error occurred'));
+      }
     }
-
-    // validate the invite code
-    const validCode = await validateInviteCode(inviteCode);
-
-    // generate a userId
-    const userId = generateIdFromEntropySize(10);
-    // generate passwordHash
-    const passwordHash = await hash(password, {
-      memoryCost: 19456,
-      timeCost: 2,
-      outputLen: 32,
-      parallelism: 1
-    });
-
-    // create user
-    const user: User = await this.userService.createUser(userId, username, passwordHash);
-
-    // update the invite code to used
-    const updatedCode = await updateInviteCode(user.id, validCode);
-
-    console.log('Signed up with:', { username, password, inviteCode });
   }
 
 

@@ -98,7 +98,17 @@
     <div class="flex justify-start">
       <span class="mr-1">client | </span>
       {#if connected}
-        <span class="text-green-500 dark:text-green-400">■ connected</span>
+        <span class="text-green-500 dark:text-green-400"
+          >■
+          <button
+            class="underline"
+            onclick={() => {
+              goto('/event/lain/inbox');
+            }}
+          >
+            wired
+          </button>
+        </span>
       {:else}
         <span class="text-red-500 dark:text-red-400">■ connecting...</span>
       {/if}

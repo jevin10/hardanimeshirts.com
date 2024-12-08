@@ -5,7 +5,8 @@ export default {
   theme: {
     fontFamily: {
       sans: ['Arial', 'Helvetica', 'sans-serif'],
-      times: ['Times New Roman Local', 'Times New Roman', 'Times', 'serif']
+      times: ['Times New Roman Local', 'Times New Roman', 'Times', 'serif'],
+      century: ['Century Schoolbook', 'Century', 'serif']
     },
     extend: {
       'dark-bg': 'rgba(0,0,0,1)',

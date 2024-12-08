@@ -54,50 +54,47 @@
     class="bg-white dark:bg-black border-b border-black dark:border-white py-1 px-1 flex justify-between items-center"
   >
     <div class="flex items-center">
-      <button class={`nav-link mr-2`} onclick={() => navigate('/')}> hardanimeshirts.com </button>
-      <span class="text-gray-500 mr-1">[</span>
+      <button class="nav-link mr-2 text-sm md:text-base" onclick={() => navigate('/')}>
+        hardanimeshirts.com
+      </button>
+      <span class="text-gray-500 mr-1 text-sm md:text-base">[</span>
       <button
-        class={`nav-link mr-1 ${isActive('/void') ? 'underline' : ''}`}
+        class="nav-link mr-1 text-sm md:text-base {isActive('/void') ? 'underline' : ''}"
         onclick={() => navigate('/void')}
       >
         v
       </button>
-      <span class="text-gray-500 mr-1">/</span>
+      <span class="text-gray-500 mr-1 text-sm md:text-base">/</span>
       <button
-        class={`nav-link mr-1 ${isActive('/seams') ? 'underline' : ''}`}
+        class="nav-link mr-1 text-sm md:text-base {isActive('/seams') ? 'underline' : ''}"
         onclick={() => navigate('/seams')}
       >
         s
       </button>
-      <span class="nav-link text-gray-500 mr-1">/</span>
+      <span class="text-gray-500 mr-1 text-sm md:text-base">/</span>
       <button
-        class={`nav-link mr-1 ${isActive('/adventures') ? 'underline' : ''}`}
+        class="nav-link mr-1 text-sm md:text-base {isActive('/adventures') ? 'underline' : ''}"
         onclick={() => navigate('/adventures')}
       >
         a
       </button>
-      <span class="text-gray-500 mr-1">/</span>
+      <span class="text-gray-500 mr-1 text-sm md:text-base">/</span>
       <button
-        class={`nav-link mr-1 ${isActive('/shop') ? 'underline' : ''}`}
+        class="nav-link mr-1 text-sm md:text-base {isActive('/shop') ? 'underline' : ''}"
         onclick={() => navigate('/shop')}
       >
         shop
       </button>
-      <span class="text-gray-500">]</span>
+      <span class="text-gray-500 text-sm md:text-base">]</span>
     </div>
-    <div class="nav-link flex space-x-1 items-center">
+
+    <div class="nav-link flex space-x-1 items-center text-sm md:text-base">
       <ThemeToggle />
-      <button
-        class={`nav-link`}
-        onclick={() => {
-          menuModalState.openModal();
-        }}
-      >
-        [menu]
-      </button>
+      <button class="nav-link" onclick={() => menuModalState.openModal()}> [menu] </button>
     </div>
   </nav>
-  <div class="flex flex-row justify-between pt-1 px-1 text-xs bg-white dark:bg-black">
+
+  <div class="flex flex-row justify-between pt-1 px-1 text-xs md:text-sm bg-white dark:bg-black">
     <div class="flex justify-start">
       <span class="mr-1">client | </span>
       {#if connected}
@@ -108,21 +105,14 @@
     </div>
     <div>
       {#if user}
-        You are browsing as <button class="link" onclick={() => goto(`/profile/${user.username}`)}
-          >{user.username}</button
-        >
+        You are browsing as <button class="link" onclick={() => goto(`/profile/${user.username}`)}>
+          {user.username}
+        </button>
         |
-        <button class="link" onclick={handleSignOut}> Sign out </button>
+        <button class="link" onclick={handleSignOut}>Sign out</button>
       {:else}
         You are browsing as a guest. |
-        <button
-          class="link"
-          onclick={() => {
-            authModalState.openModal();
-          }}
-        >
-          Sign in
-        </button>
+        <button class="link" onclick={() => authModalState.openModal()}> Sign in </button>
       {/if}
     </div>
   </div>

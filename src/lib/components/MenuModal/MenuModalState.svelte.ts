@@ -2,7 +2,7 @@ import { getContext, setContext } from "svelte";
 
 export class MenuModalState {
   isVisible: boolean = $state(false);
-  page: 'Main' | 'Invite' = $state('Main');
+  page: 'Main' | 'Invite' | 'Policies' = $state('Main');
 
   constructor() { }
 

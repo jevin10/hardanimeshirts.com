@@ -29,7 +29,7 @@
   <div class="overlay">
     <div class="min-h-[60vh] md:h-[30rem] w-[30rem] m-5 modal flex flex-col">
       <div class="w-full border-b border-black dark:border-white flex flex-row justify-between p-1">
-        <div class="text-m">Menu</div>
+        <div class="text-m">Menu | {menuModalState.page}</div>
         <button
           type="button"
           onclick={() => {

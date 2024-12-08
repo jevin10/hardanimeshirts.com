@@ -70,7 +70,7 @@
   `}
 </svelte:head>
 
-<div class="min-h-screen bg-white dark:bg-black text-black dark:text-white">
+<div class="min-h-screen bg-white dark:bg-black text-black dark:text-white max-w-screen">
   {#if connectionState === 'ready'}
     <main class="h-full">
       <AuthModal />

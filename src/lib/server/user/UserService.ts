@@ -1,15 +1,13 @@
 // TODO:
 // get userdata
 //    - get profilePicutre
-//    - get progress
 //    - get badges
 //    - get online status
-//    - get posts
 
 import { error } from "@sveltejs/kit";
 import type UserRepository from "./repository/UserRepository";
 import { UserRepositoryImpl } from "./repository/UserRepositoryImpl";
-import type { UserProgress } from "@prisma/client";
+import type { User, UserProgress } from "@prisma/client";
 import { requestSchemas, type UserClientAction, type UserServerAction } from "$lib/types/ws/actions/user";
 
 export class UserService {
@@ -76,5 +74,13 @@ export class UserService {
     }));
 
     return posts;
+  }
+
+  async createUser(userId: string, username: string, passwordHash: string): Promise<User> {
+    // create user in db
+    const user = await this.userRepository.createUser(userId, username, passwordHash);
+    // create UserProgress in db
+    await this.userRepository.createUserProgress(user.id);
+    return user;
   }
 }

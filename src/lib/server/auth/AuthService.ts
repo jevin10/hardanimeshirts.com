@@ -1,16 +1,22 @@
 import prisma from "$lib/prisma";
 import { loginSchema, signupSchema, type LoginInput, type SignupInput } from "$lib/types/auth/inputs";
-import { verify } from "@node-rs/argon2";
+import { hash, verify } from "@node-rs/argon2";
 import { lucia } from "../auth";
 import type { Cookies, RequestEvent } from "@sveltejs/kit";
 import { ZodError } from "zod";
-import { Prisma, type InviteCode } from "@prisma/client";
+import { Prisma, type InviteCode, type User } from "@prisma/client";
 import { generate } from "random-words";
+import { generateIdFromEntropySize } from "lucia";
+import { UserService } from "../user/UserService";
+import { generateInviteCode, updateInviteCode, validateInviteCode } from "./utils/inviteCode";
 
 export class AuthService {
   private static instance: AuthService;
+  private userService: UserService;
 
-  private constructor() { }
+  private constructor() {
+    this.userService = UserService.getInstance();
+  }
 
   public static getInstance(): AuthService {
     if (!AuthService.instance) {
@@ -74,66 +80,42 @@ export class AuthService {
   }
 
   async signup(input: SignupInput): Promise<void> {
-    // Validate input 
-    const validated = signupSchema.parse(input);
-    console.log('Signed up with:', validated);
+    const { username, password, inviteCode } = input;
+
+    // get a user that matches the username
+    const existingUser = await prisma.user.findUnique({
+      where: { username }
+    })
+    // if a user with the username exists, throw error
+    if (existingUser) {
+      throw new Error('Username already taken');
+    }
+
+    // validate the invite code
+    const validCode = await validateInviteCode(inviteCode);
+
+    // generate a userId
+    const userId = generateIdFromEntropySize(10);
+    // generate passwordHash
+    const passwordHash = await hash(password, {
+      memoryCost: 19456,
+      timeCost: 2,
+      outputLen: 32,
+      parallelism: 1
+    });
+
+    // create user
+    const user: User = await this.userService.createUser(userId, username, passwordHash);
+
+    // update the invite code to used
+    const updatedCode = await updateInviteCode(user.id, validCode);
+
+    console.log('Signed up with:', { username, password, inviteCode });
   }
 
 
   async generateInviteCode(userId: string): Promise<InviteCode> {
-    // Try to generate a unique code up to 5 times
-    for (let attempts = 0; attempts < 5; attempts++) {
-      const code = generate({
-        exactly: 3,
-        join: "-",
-        maxLength: 5
-      });
-
-      const match = await prisma.inviteCode.findFirst({
-        where: { code }
-      });
-
-      if (!match) {
-        // Create the invite code record
-        const inviteCode = await prisma.inviteCode.create({
-          data: {
-            code,
-            generatedBy: userId
-          }
-        });
-        return inviteCode;
-      }
-    }
-
-    // If we failed to generate a unique code after 5 attempts, throw an error
-    throw new Error('Failed to generate unique invite code after multiple attempts');
-  }
-
-  // returns a valid invite code
-  // returns null if invalid or doesnt exist
-  async validateInviteCode(code: string): Promise<InviteCode | null> {
-    const match = await prisma.inviteCode.findFirst({
-      where: {
-        code,
-        usedBy: null
-      }
-    });
-
-    return match;
-  }
-
-  // update an invite code that was used to generate a user
-  // usedBy is the userId of the person who used the invite code
-  async updateInviteCode(usedBy: string, code: InviteCode): Promise<InviteCode> {
-    const updatedCode = await prisma.inviteCode.update({
-      where: {
-        id: code.id
-      },
-      data: {
-        usedBy,
-        usedAt: new Date()
-      }
-    })
-    return updatedCode;
+    const inviteCode: InviteCode = await generateInviteCode(userId);
+    return inviteCode;
   }
 }

@@ -1,5 +1,5 @@
 import prisma from "$lib/prisma";
-import type { posts_new, UserProgress } from "@prisma/client";
+import type { posts_new, User, UserProgress } from "@prisma/client";
 import type UserRepository from "./UserRepository";
 
 export class UserRepositoryImpl implements UserRepository {
@@ -59,5 +59,37 @@ export class UserRepositoryImpl implements UserRepository {
     });
 
     return parentPosts;
+  }
+
+  async createUser(userId: string, username: string, passwordHash: string): Promise<User> {
+    const user: User = await prisma.user.create({
+      data: {
+        id: userId,
+        username,
+        password_hash: passwordHash
+      }
+    });
+
+    return user;
+  }
+
+  async createUserProgress(userId: string, level?: number, currentXp?: number): Promise<UserProgress> {
+    const existingProgress: UserProgress | null = await prisma.userProgress.findUnique({
+      where: { userId }
+    });
+
+    if (existingProgress) {
+      throw new Error('User progress already exists!');
+    }
+
+    const userProgress: UserProgress = await prisma.userProgress.create({
+      data: {
+        userId,
+        level: level ?? 0,
+        currentXp: currentXp ?? 0
+      }
+    });
+
+    return userProgress;
   }
 }

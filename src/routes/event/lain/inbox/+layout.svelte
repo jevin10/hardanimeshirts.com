@@ -2,10 +2,11 @@
   import { onMount } from 'svelte';
   import type { Snippet } from 'svelte';
   import background from '$lib/img/event/lain/background.jpg';
+  import { afterNavigate } from '$app/navigation';
 
   let { children }: { children: Snippet } = $props();
 
-  onMount(() => {
+  afterNavigate(() => {
     window.scrollTo(0, document.body.scrollHeight);
   });
 </script>

@@ -6,7 +6,13 @@
 
   let { children }: { children: Snippet } = $props();
 
+  // scroll to bottom afterNavigate
   afterNavigate(() => {
+    window.scrollTo(0, document.body.scrollHeight);
+  });
+
+  // scroll to bottom onMount
+  onMount(() => {
     window.scrollTo(0, document.body.scrollHeight);
   });
 </script>

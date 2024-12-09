@@ -7,7 +7,7 @@ export type Measurement = {
 
 export type Size = 'xs' | 's' | 'm' | 'l' | 'xl';
 
-export type Category = 'shirt' | 'pants';
+export type Category = 'shirt' | 'pants' | 'outerwear';
 
 export type BaseClothing = Product & {
   category: Category;
@@ -34,3 +34,14 @@ export type Pants = BaseClothing & {
     length: Measurement;
   }
 };
+
+export type Outerwear = BaseClothing & {
+  measurements: {
+    chest: Measurement;
+    waist: Measurement;
+    shoulders: Measurement;
+    sleeves: Measurement;
+    neck: Measurement;
+    length: Measurement;
+  }
+}

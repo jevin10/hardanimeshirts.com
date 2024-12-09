@@ -4,7 +4,8 @@ export type SortCategory = Category | 'all';
 export const sortCategoryTypes: Record<SortCategory, SortCategory> = {
   all: 'all',
   shirt: 'shirt',
-  pants: 'pants'
+  pants: 'pants',
+  outerwear: 'outerwear'
 }
 
 export type SortProduct = 'price ascending'

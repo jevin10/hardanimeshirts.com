@@ -26,7 +26,7 @@
       {#if sortDropdownState.categoryOpen}
         <div
           id="category-listbox"
-          class="absolute top-full left-0 border rounded shadow-lg z-10"
+          class="absolute top-full -left-1 border border-black dark:border-white px-1 pb-1 shadow-sm z-10"
           role="listbox"
         >
           {#each Object.values(sortCategoryTypes).filter((type) => type !== sortDropdownState.category) as type}
@@ -34,7 +34,7 @@
               role="option"
               aria-selected={sortDropdownState.category === type}
               tabindex="0"
-              class="block w-[3rem] text-left cursor-pointer link"
+              class="block w-[4.2rem] text-left cursor-pointer link"
               onclick={() => sortDropdownState.setCategory(type)}
               onkeydown={(e) => sortDropdownState.handleCategoryOptionKeydown(e, type)}
             >
@@ -62,7 +62,7 @@
       {#if sortDropdownState.sortOpen}
         <div
           id="sort-listbox"
-          class="absolute top-full left-0 border rounded shadow-lg z-10"
+          class="absolute top-full -left-1 border border-black dark:border-white px-1 pb-1 shadow-sm z-10"
           role="listbox"
         >
           {#each Object.values(sortProductTypes).filter((type) => type !== sortDropdownState.sort) as type}
@@ -70,7 +70,7 @@
               role="option"
               aria-selected={sortDropdownState.sort === type}
               tabindex="0"
-              class="block w-[8rem] text-left cursor-pointer link"
+              class="block w-[7rem] text-left cursor-pointer link"
               onclick={() => sortDropdownState.setSort(type)}
               onkeydown={(e) => sortDropdownState.handleSortOptionKeydown(e, type)}
             >

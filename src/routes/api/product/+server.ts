@@ -76,6 +76,12 @@ export const GET: RequestHandler = async ({ url }) => {
       return new Response('Must provide productId', { status: 400 });
     }
 
+    // check if productId is all
+    if (productId === 'all') {
+      const result = await shopService.getClothingProducts();
+      return json({ status: 201, data: result });
+    }
+
     const result = await shopService.getClothingProduct(Number(productId));
 
     return json({ status: 201, data: result });

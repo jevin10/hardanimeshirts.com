@@ -17,7 +17,7 @@
   <img
     src={url}
     alt="post"
-    class="w-48 max-h-64 border border-dotted border-black dark:border-white transition-transform"
+    class="w-48 max-h-64 bg-zinc-500 border border-dotted border-black dark:border-white transition-transform"
   />
 </button>
 

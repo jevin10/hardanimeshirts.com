@@ -1,10 +1,10 @@
 <script lang="ts">
   import SortDropdown from './components/SortDropdown.svelte';
   import { SortDropdown as SortDropdownState } from './state/SortDropdown.svelte';
-  import { getShopState, setShopState, Shop } from './state/Shop.svelte';
+  import { getShopState, Shop } from './state/Shop.svelte';
   import Product from './components/Product.svelte';
-  import type { ClothingProduct } from '$lib/types/shop/product/product';
   import { goto } from '$app/navigation';
+  import LoadingIcon from '~icons/eos-icons/bubble-loading';
 
   const shopState: Shop = getShopState();
   const sortDropdownState: SortDropdownState = shopState.sortDropdownState;
@@ -13,6 +13,13 @@
 
 <SortDropdown />
 <div class="mt-2">
+  {#if products.length === 0}
+    <div class="my-5 flex flex-row items-center">
+      <div class="text-xl">Opening the store</div>
+      <LoadingIcon class="w-5 h-5 mx-2" />
+    </div>
+  {/if}
+
   {#each products as product}
     <div class="my-5">
       <button

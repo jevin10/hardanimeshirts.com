@@ -1,15 +1,12 @@
 <script lang="ts">
   import Banner from '$lib/components/Heading/Banner.svelte';
   import PageTitle from '$lib/components/Heading/PageTitle.svelte';
-  import type { Snippet } from 'svelte';
+  import { onMount, type Snippet } from 'svelte';
   import CartIcon from '~icons/ion/bag-sharp';
-  import { setShopState, Shop } from './state/Shop.svelte';
-  import type { LayoutData } from './$types';
+  import { getShopState, Shop } from './state/Shop.svelte';
 
-  let { data, children }: { data: LayoutData; children: Snippet } = $props();
-  const shopState: Shop = setShopState();
-
-  shopState.addProducts(data.products);
+  let { children }: { children: Snippet } = $props();
+  const shopState: Shop = getShopState();
 </script>
 
 <div class="my-10 mx-3">

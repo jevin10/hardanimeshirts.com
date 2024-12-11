@@ -12,6 +12,7 @@
   import type { LayoutData } from './$types';
   import { setUsersState, type Users } from '$lib/client/users/Users.svelte';
   import { setMenuModalState } from '$lib/components/MenuModal/MenuModalState.svelte';
+  import { setShopState, Shop } from './shop/state/Shop.svelte';
 
   let { children, data }: { children: Snippet; data: LayoutData } = $props();
 
@@ -27,6 +28,8 @@
   // set modal states
   setAuthModalState();
   setMenuModalState();
+  // set shop state
+  const shopState: Shop = setShopState();
 
   setContext('USER_CTX', data.user);
 
@@ -47,6 +50,7 @@
   });
 
   onMount(() => {
+    shopState.initialize();
     if (!browser) return;
     wsStore.connect();
   });

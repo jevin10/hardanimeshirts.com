@@ -1,15 +1,39 @@
 import { SvelteMap } from 'svelte/reactivity';
 import type { SortCategory, SortProduct } from "$lib/types/shop/product/sort";
+import { v4 } from 'uuid';
 import { getContext, setContext } from "svelte";
 import { SortDropdown } from "./SortDropdown.svelte";
 import type { ClothingProduct } from "$lib/types/shop/product/product";
+import { createBagKey, type Bag, type ItemId } from '$lib/types/shop/state/bag';
 
 export class Shop {
+  initialized: boolean = $state(false);
   sortDropdownState: SortDropdown;
-  products = $state(new SvelteMap<number, ClothingProduct>());
+  products: SvelteMap<number, ClothingProduct> = $state(
+    new SvelteMap<number, ClothingProduct>()
+  );
+  bag: Bag = $state(new SvelteMap<string, ClothingProduct>);
 
   constructor() {
     this.sortDropdownState = new SortDropdown();
+  }
+
+  async initialize(): Promise<void> {
+    if (this.initialized) {
+      console.log('Shop was already initialized!');
+      return;
+    }
+    const response = await fetch(`/api/product/?productId=all`, {
+      method: 'GET'
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch products');
+    }
+
+    const result = await response.json();
+    this.addProducts(result.data);
+    this.initialized = true;
   }
 
   addProducts(products: ClothingProduct[]) {
@@ -18,12 +42,31 @@ export class Shop {
     });
   }
 
+  addProduct(product: ClothingProduct) {
+    if (!this.products.has(product.id)) {
+      this.products.set(product.id, product);
+    }
+  }
+
   getProduct(id: number): ClothingProduct | undefined {
     return this.products.get(id);
   }
 
   getAllProducts(): ClothingProduct[] {
     return Array.from(this.products.values());
+  }
+
+  addToBag(product: ClothingProduct) {
+    const itemId: ItemId = {
+      productId: product.id,
+      uuid: v4()
+    }
+
+    this.bag.set(createBagKey(itemId), product);
+  }
+
+  getBag(): Bag {
+    return this.bag;
   }
 }
 

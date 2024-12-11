@@ -3,8 +3,13 @@
   import PageTitle from '$lib/components/Heading/PageTitle.svelte';
   import type { Snippet } from 'svelte';
   import CartIcon from '~icons/ion/bag-sharp';
+  import { setShopState, Shop } from './state/Shop.svelte';
+  import type { LayoutData } from './$types';
 
-  let { children }: { children: Snippet } = $props();
+  let { data, children }: { data: LayoutData; children: Snippet } = $props();
+  const shopState: Shop = setShopState();
+
+  shopState.addProducts(data.products);
 </script>
 
 <div class="my-10 mx-3">

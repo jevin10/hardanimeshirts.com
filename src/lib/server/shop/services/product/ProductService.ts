@@ -19,6 +19,6 @@ export class ProductService {
   }
 
   async createClothingProduct(params: CreateClothingProductPayload): Promise<ClothingProduct> {
-
+    return await this.shopRepository.createClothingProduct(params);
   }
 }

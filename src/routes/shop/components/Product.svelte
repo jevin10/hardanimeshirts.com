@@ -20,6 +20,9 @@
   // define shopState
   const shopState: Shop = getShopState();
 
+  // whether or not the product was added to the bag
+  let addedToBag = $state(false);
+  // selected size
   let size: Size = $state('XS');
   let sizeData: CreateClothingDataPayload['sizeData'] = $state(
     (product?.ClothingData?.sizeData as CreateClothingDataPayload['sizeData']) ?? []
@@ -27,7 +30,6 @@
   const sizes = $derived(sizeData.map((data) => data.size));
   // the data that specifically has the measurements data according to size
   const sizeInfo = $derived(sizeData.find((data) => data.size === size));
-
   // string conversion of measurements in sizeInfo
   let measurements: string = $derived.by(() => {
     return sizeInfo ? formatMeasurements(sizeInfo.measurements) : 'No measurements available';
@@ -54,11 +56,11 @@
   }
 
   function addToBag() {
-    if (!product) {
+    if (!product || !sizeInfo) {
       return;
     }
-
-    shopState.addToBag(product);
+    shopState.addToBag(product, sizeInfo);
+    addedToBag = true;
   }
 
   // Set initial size if current size isn't available
@@ -143,7 +145,17 @@
                         {/each}
                       </select>
                     </div>
-                    <button class="my-0 text-xl font-bold" onclick={addToBag}>[add to bag]</button>
+                    {#if !addedToBag}
+                      <button class="my-0 text-xl font-bold" onclick={addToBag}>[add to bag]</button
+                      >
+                    {:else}
+                      <button
+                        class="my-0 text-xl font-bold"
+                        onclick={() => {
+                          goto('/shop/bag');
+                        }}>[proceed to checkout]</button
+                      >
+                    {/if}
                   </div>
                 {:else if product}
                   <button class="my-1" onclick={() => goto(`/shop/clothing/${product.id}`)}

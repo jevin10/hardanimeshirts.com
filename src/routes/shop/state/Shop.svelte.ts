@@ -63,6 +63,10 @@ export class Shop {
 
     this.bag.set(createBagKey(itemId), itemDetails);
   }
+
+  removeFromBag(itemKey: string) {
+    this.bag.delete(itemKey);
+  }
 }
 
 const SHOP_CTX = 'SHOP_CTX';

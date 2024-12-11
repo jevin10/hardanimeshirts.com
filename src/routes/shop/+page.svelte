@@ -13,6 +13,24 @@
 
 <SortDropdown />
 <div class="mt-2">
+  <div class="my-5 flex flex-col text-xs font-sans gap-1">
+    <div>
+      VERY IMPORTANT INFORMATION<br />
+      PLEASE READ TO REDUCE CONFUSION (˶°ㅁ°)!!
+    </div>
+    <div>
+      *all prints are unique & the images displayed<br />
+      may not be the ones you receive<br />
+      Shirts are printed and garments are sewn by hand one by one :)<br />
+      so please be patient<br />
+      as it may take up to
+      <b>2 months</b> for your package to ship<br />
+      Deep gratitude for your support desu :3<br />
+      Please email us at
+      <a href="mailto:admin@hardanimeshirts.com" class="link">admin@hardanimeshirts.com</a><br />
+      with any questions about your purchase thank you!
+    </div>
+  </div>
   {#if products.length === 0}
     <div class="my-5 flex flex-row items-center">
       <div class="text-xl">Opening the store</div>

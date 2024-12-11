@@ -9,7 +9,7 @@ export type ItemId = {
 
 export type ItemDetails = ClothingProduct & SizeInfo;
 
-export type Bag = SvelteMap<string, ClothingProduct & SizeInfo>;
+export type Bag = SvelteMap<string, ItemDetails>;
 
 // helper for converting ItemId into string
 export function createBagKey(itemId: ItemId): string {

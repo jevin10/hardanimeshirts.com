@@ -4,7 +4,8 @@ import { v4 } from 'uuid';
 import { getContext, setContext } from "svelte";
 import { SortDropdown } from "./SortDropdown.svelte";
 import type { ClothingProduct } from "$lib/types/shop/product/product";
-import { createBagKey, type Bag, type ItemId } from '$lib/types/shop/state/bag';
+import { createBagKey, type Bag, type ItemDetails, type ItemId } from '$lib/types/shop/state/bag';
+import type { SizeInfo } from '$lib/types/shop/product/clothing';
 
 export class Shop {
   initialized: boolean = $state(false);
@@ -12,7 +13,7 @@ export class Shop {
   products: SvelteMap<number, ClothingProduct> = $state(
     new SvelteMap<number, ClothingProduct>()
   );
-  bag: Bag = $state(new SvelteMap<string, ClothingProduct>);
+  bag: Bag = $state(new SvelteMap<string, ItemDetails>);
 
   constructor() {
     this.sortDropdownState = new SortDropdown();
@@ -56,17 +57,11 @@ export class Shop {
     return Array.from(this.products.values());
   }
 
-  addToBag(product: ClothingProduct) {
-    const itemId: ItemId = {
-      productId: product.id,
-      uuid: v4()
-    }
+  addToBag(product: ClothingProduct, sizeInfo: SizeInfo) {
+    const itemId: ItemId = { productId: product.id, uuid: v4() }
+    const itemDetails: ItemDetails = { ...product, ...sizeInfo };
 
-    this.bag.set(createBagKey(itemId), product);
-  }
-
-  getBag(): Bag {
-    return this.bag;
+    this.bag.set(createBagKey(itemId), itemDetails);
   }
 }
 

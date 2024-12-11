@@ -1,12 +1,10 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import Image from '$lib/components/imageboard/post/Image.svelte';
-  import type { Size } from '$lib/types/shop/product/clothing';
+  import type { Size, Measurements } from '$lib/types/shop/product/clothing';
   import type { ClothingProduct } from '$lib/types/shop/product/product';
   import type { CreateClothingDataPayload } from '$lib/types/shop/product/schemas';
-  import type { Snippet } from 'svelte';
-
-  type Measurements = Record<string, string>;
+  import { getShopState, type Shop } from '../state/Shop.svelte';
 
   interface ProductProps {
     product?: ClothingProduct;
@@ -17,16 +15,21 @@
     content: string;
   }
 
+  // define props
   let { product, expanded = false }: ProductProps = $props();
+  // define shopState
+  const shopState: Shop = getShopState();
 
   let size: Size = $state('XS');
-  const sizes: Size[] = ['XS', 'S', 'M', 'L', 'XL'];
   let sizeData: CreateClothingDataPayload['sizeData'] = $state(
     (product?.ClothingData?.sizeData as CreateClothingDataPayload['sizeData']) ?? []
   );
+  const sizes = $derived(sizeData.map((data) => data.size));
+  // the data that specifically has the measurements data according to size
+  const sizeInfo = $derived(sizeData.find((data) => data.size === size));
 
+  // string conversion of measurements in sizeInfo
   let measurements: string = $derived.by(() => {
-    const sizeInfo = sizeData.find((data) => data.size === size);
     return sizeInfo ? formatMeasurements(sizeInfo.measurements) : 'No measurements available';
   });
 
@@ -49,6 +52,21 @@
   function formatDetails(details: string[]): string {
     return details.map((detail) => `>${detail}`).join('\n');
   }
+
+  function addToBag() {
+    if (!product) {
+      return;
+    }
+
+    shopState.addToBag(product);
+  }
+
+  // Set initial size if current size isn't available
+  $effect(() => {
+    if (!sizes.includes(size)) {
+      size = sizes[0] || 'XS';
+    }
+  });
 </script>
 
 {#snippet header(index: number)}
@@ -125,7 +143,7 @@
                         {/each}
                       </select>
                     </div>
-                    <button class="my-0 text-xl font-bold">[sold out]</button>
+                    <button class="my-0 text-xl font-bold" onclick={addToBag}>[add to bag]</button>
                   </div>
                 {:else if product}
                   <button class="my-1" onclick={() => goto(`/shop/clothing/${product.id}`)}

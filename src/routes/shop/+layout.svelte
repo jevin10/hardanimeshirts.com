@@ -4,6 +4,7 @@
   import { onMount, type Snippet } from 'svelte';
   import CartIcon from '~icons/ion/bag-sharp';
   import { getShopState, Shop } from './state/Shop.svelte';
+  import { goto } from '$app/navigation';
 
   let { children }: { children: Snippet } = $props();
   const shopState: Shop = getShopState();
@@ -19,7 +20,12 @@
       }}>[back]</button
     >
     <div class="flex flex-row gap-2">
-      <button class="flex flex-row items-center gap-1">[<CartIcon class="h-4 w-4 " />]</button>
+      <button
+        class="flex flex-row items-center gap-1"
+        onclick={() => {
+          goto('/shop/bag');
+        }}>[<CartIcon class="h-4 w-4 " />]</button
+      >
     </div>
   </div>
   <div class="my-5">

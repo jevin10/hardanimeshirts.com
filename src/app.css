@@ -54,6 +54,18 @@
   input {
     @apply bg-white/50 dark:bg-black/50 border border-black dark:border-white;
   }
+
+  textarea {
+    @apply col-span-3 border text-lg border-black dark:border-white p-1 dark:bg-black leading-none
+  }
+
+  select {
+    @apply border-black dark:border-white bg-white dark:bg-black
+  }
+
+  label {
+    @apply block text-xs tracking-wider uppercase mb-1
+  }
 }
 
 @layer components {

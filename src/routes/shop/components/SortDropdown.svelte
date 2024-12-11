@@ -26,7 +26,7 @@
       {#if sortDropdownState.categoryOpen}
         <div
           id="category-listbox"
-          class="absolute top-full -left-1 border border-black dark:border-white px-1 pb-1 shadow-sm z-10"
+          class="absolute top-full -left-1 border border-black dark:border-white px-1 pb-1 shadow-sm z-10 bg-white dark:bg-black"
           role="listbox"
         >
           {#each Object.values(sortCategoryTypes).filter((type) => type !== sortDropdownState.category) as type}
@@ -62,7 +62,7 @@
       {#if sortDropdownState.sortOpen}
         <div
           id="sort-listbox"
-          class="absolute top-full -left-1 border border-black dark:border-white px-1 pb-1 shadow-sm z-10"
+          class="absolute top-full -left-1 border border-black dark:border-white px-1 pb-1 shadow-sm z-10 bg-white dark:bg-black"
           role="listbox"
         >
           {#each Object.values(sortProductTypes).filter((type) => type !== sortDropdownState.sort) as type}

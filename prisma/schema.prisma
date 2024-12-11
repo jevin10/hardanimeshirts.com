@@ -311,6 +311,9 @@ model Product {
   images        String[]
   domain        Int?
   price         Int
+  categories    String[]
+  available     Boolean?
+  details       String[]
   ClothingData  ClothingData?
   ProductDomain ProductDomain? @relation(fields: [domain], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Purchase      Purchase[]
@@ -342,12 +345,10 @@ model Purchase {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model ClothingData {
-  id           Int      @id @default(autoincrement())
-  size         String?
-  measurements Json?    @db.Json
-  quantity     Int?
-  categories   String[]
-  Product      Product  @relation(fields: [id], references: [id], onDelete: Cascade)
+  id       Int     @id @default(autoincrement())
+  sizeData Json?
+  quantity Int?
+  Product  Product @relation(fields: [id], references: [id], onDelete: Cascade)
 
   @@schema("shop")
 }

@@ -1,3 +1,5 @@
+import type { Product, ProductDomain } from "@prisma/client";
+
 export type Measurement = {
   value: number;
   unit: 'in' | 'cm';
@@ -30,4 +32,8 @@ export type OuterwearMeasurements = {
   sleeves: Measurement;
   neck: Measurement;
   length: Measurement;
+}
+
+export type ClothingProduct = Product & {
+  ProductDomain: ProductDomain;
 }

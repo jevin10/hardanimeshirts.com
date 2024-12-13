@@ -9,8 +9,14 @@ export interface SShippingRateOutput {
   };
   tax_code: 'txcd_92010001';
   delivery_estimate: {
-    maximum: 7;
-    minimum: 5;
+    maximum: {
+      unit: 'business_day',
+      value: 7
+    };
+    minimum: {
+      unit: 'business_day',
+      value: 5
+    };
   }
 }
 
@@ -26,13 +32,19 @@ export class SShippingRate {
       display_name: this.shippingZone.shippingGroup + ': Express',
       type: 'fixed_amount',
       fixed_amount: {
-        amount: this.shippingZone.price,
+        amount: this.shippingZone.price * 100,
         currency: 'usd',
       },
       tax_code: 'txcd_92010001',
       delivery_estimate: {
-        maximum: 7,
-        minimum: 5
+        maximum: {
+          unit: 'business_day',
+          value: 7
+        },
+        minimum: {
+          unit: 'business_day',
+          value: 5
+        }
       }
     };
   };

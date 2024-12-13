@@ -7,8 +7,6 @@ export interface SProductOutput {
   };
   tax_code: string;
   images: string[];
-  shippable: true;
-  url: string;
 }
 
 export class SProduct {
@@ -20,7 +18,6 @@ export class SProduct {
   };
   taxCode: string;
   images: string[];
-  url: string;
 
   constructor(
     name: string,
@@ -35,8 +32,6 @@ export class SProduct {
     // tax code for tangible goods
     this.taxCode = 'txcd_99999999';
     this.images = [image];
-    // url for clothing
-    this.url = `https://hardanimeshirts.com/clothing/${productId}`;
   }
 
   create(): SProductOutput {
@@ -46,8 +41,6 @@ export class SProduct {
       metadata: this.metadata,
       tax_code: this.taxCode,
       images: this.images,
-      shippable: true,
-      url: this.url
     };
   };
 }

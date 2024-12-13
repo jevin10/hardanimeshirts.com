@@ -50,7 +50,7 @@ export const shippingData: ShippingZone[] = [
   {
     shippingGroup: "Europe Group A",
     countries: ["AT", "BE", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "SK", "SI", "ES", "SE", "CH"],
-    price: 24 // Converted from €22
+    price: 24
   },
   {
     shippingGroup: "Europe Group B",

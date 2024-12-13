@@ -1,4 +1,5 @@
 import { env } from "$env/dynamic/private";
+import Stripe from "stripe";
 
-export const stripe = require('stripe')(env.STRIPE_SECRET_KEY);
+export const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 

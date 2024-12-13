@@ -109,9 +109,12 @@ export class ShopRepository {
   async createOrder(
     userId: string,
     products: {
+      name: string,
+      description: string,
       productId: number,
       price: number,
-      details: Size
+      details: Size,
+      image: string,
     }[]
   ): Promise<{
     Order: Order,

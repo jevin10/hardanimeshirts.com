@@ -8,10 +8,12 @@ export class ShopService {
   private static instance: ShopService;
   private shopRepository: ShopRepository;
   private productService: ProductService;
+  private checkoutService: CheckoutService;
 
   private constructor() {
     this.shopRepository = ShopRepository.getInstance();
     this.productService = ProductService.getInstance();
+    this.checkoutService = CheckoutService.getInstance();
   }
 
   public static getInstance(): ShopService {
@@ -22,7 +24,7 @@ export class ShopService {
   }
 
   getCheckoutService(): CheckoutService {
-    return CheckoutService.getInstance();
+    return this.checkoutService;
   }
 
   async getClothingProducts(): Promise<ClothingProduct[]> {

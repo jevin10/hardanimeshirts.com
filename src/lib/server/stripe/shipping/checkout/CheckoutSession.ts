@@ -1,5 +1,6 @@
 import { getCountryCodes } from "$lib/shared/locations/countries";
-import type { ShippingZone } from "$lib/shared/shop/shippingUtils";
+import { type ShippingZone } from "$lib/shared/shop/shippingUtils";
+import type Stripe from "stripe";
 import { stripe } from "../../stripe";
 import type { SPrice, SPriceOutput } from "./SPrice";
 import { SShippingRate, type SShippingRateOutput } from "./SShippingRate";
@@ -37,17 +38,16 @@ export class CheckoutSession {
     return await stripe.checkout.sessions.create({
       success_url: this.successUrl,
       cancel_url: this.cancelUrl,
-      payment_method_types: ["card"],
       client_reference_id: this.orderId,
       line_items: this.parseItems(this.items),
       mode: 'payment',
-      custom_text: 'Upon payment completion, you will be provided an invite code to the website.',
-      shipping_address_collection: {
-        allowed_countries: this.shippingZone.countries,
-      },
-      shipping_options: {
+      shipping_options: [{
         shipping_rate_data: this.sshippingRate.create()
+      }],
+      shipping_address_collection: {
+        allowed_countries: this.shippingZone.countries as Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[]
       }
     });
   }
 }
+

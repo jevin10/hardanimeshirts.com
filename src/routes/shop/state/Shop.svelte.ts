@@ -16,6 +16,7 @@ export class Shop {
   );
   bag: SvelteMap<string, ItemDetails> = $state(new SvelteMap<string, ItemDetails>);
   location: Country = $state({ country: "United States", code: "US" });
+  checkoutState: 'static' | 'generating' = $state('static');
 
   constructor() {
     this.sortDropdownState = new SortDropdown();
@@ -71,10 +72,9 @@ export class Shop {
   }
 
   async checkoutBag(bag: Bag) {
-    console.log('bag state:', bag);
+    this.checkoutState = 'generating';
     const bagArray: ItemDetails[] = Array.from(bag.values());
-    console.log(bagArray);
-    const result = await fetch('/api/shop/createCheckoutSession', {
+    const response = await fetch('/api/shop/createCheckoutSession', {
       method: 'POST',
       body: JSON.stringify({
         bag: bagArray,
@@ -82,7 +82,15 @@ export class Shop {
       })
     });
 
-    console.log(result);
+    this.checkoutState = 'static';
+    if (!response.ok) {
+      throw new Error('Failed to create checkout session');
+    }
+
+    const { url } = await response.json();
+
+    // Redirect to Stripe Checkout
+    window.location.href = url;
   };
 }
 

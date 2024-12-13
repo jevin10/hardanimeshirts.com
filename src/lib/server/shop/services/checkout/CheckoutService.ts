@@ -1,15 +1,18 @@
-import type { Size } from "$lib/types/shop/product/clothing";
 import type { Bag, ItemDetails } from "$lib/types/shop/state/bag";
 import type { Order, OrderItem } from "@prisma/client";
 import { ShopRepository } from "../../repository/ShopRepository";
 import type { Country } from "$lib/shared/locations/countries";
+import { StripeService } from "$lib/server/stripe/StripeService";
+import { getShippingZone } from "$lib/shared/shop/shippingUtils";
 
 export class CheckoutService {
   private static instance: CheckoutService
   private shopRepository: ShopRepository;
+  private stripeService: StripeService;
 
   constructor() {
     this.shopRepository = ShopRepository.getInstance();
+    this.stripeService = StripeService.getInstance();
   }
 
   public static getInstance(): CheckoutService {
@@ -31,7 +34,10 @@ export class CheckoutService {
         const product = await this.shopRepository.getClothingProduct(itemDetail.id);
 
         return {
-          productId: itemDetail.id,
+          name: product.name ?? 'Untitled',
+          description: product.description ?? '',
+          image: product.images[0],
+          productId: product.id,
           price: product.price,
           details: itemDetail.size
         };
@@ -45,5 +51,8 @@ export class CheckoutService {
     } = await this.shopRepository.createOrder(userId, products);
 
     console.log('Order created!');
+
+    // TODO: convert items to sprice
+    return await StripeService.getInstance().createCheckoutSession(products, order.OrderItems, order.Order.id, getShippingZone(location));
   }
 }

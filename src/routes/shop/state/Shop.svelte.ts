@@ -6,6 +6,7 @@ import { SortDropdown } from "./SortDropdown.svelte";
 import type { ClothingProduct } from "$lib/types/shop/product/product";
 import { createBagKey, type Bag, type ItemDetails, type ItemId } from '$lib/types/shop/state/bag';
 import type { SizeInfo } from '$lib/types/shop/product/clothing';
+import type { Country } from '$lib/shared/locations/countries';
 
 export class Shop {
   initialized: boolean = $state(false);
@@ -14,6 +15,7 @@ export class Shop {
     new SvelteMap<number, ClothingProduct>()
   );
   bag: Bag = $state(new SvelteMap<string, ItemDetails>);
+  location: Country = $state({ country: "United States", code: "US" });
 
   constructor() {
     this.sortDropdownState = new SortDropdown();

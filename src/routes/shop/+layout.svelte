@@ -5,6 +5,7 @@
   import CartIcon from '~icons/ion/bag-sharp';
   import { getShopState, Shop } from './state/Shop.svelte';
   import { goto } from '$app/navigation';
+  import LocationSelector from './components/LocationSelector.svelte';
 
   let { children }: { children: Snippet } = $props();
   const shopState: Shop = getShopState();
@@ -28,6 +29,7 @@
       >
     </div>
   </div>
+  <LocationSelector />
   <div class="my-5">
     {@render children()}
   </div>

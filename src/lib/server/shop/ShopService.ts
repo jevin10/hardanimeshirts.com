@@ -1,6 +1,7 @@
 import type { ClothingProduct } from "$lib/types/shop/product/product";
 import type { CreateClothingProductPayload } from "$lib/types/shop/product/schemas";
 import { ShopRepository } from "./repository/ShopRepository";
+import { CheckoutService } from "./services/checkout/CheckoutService";
 import { ProductService } from "./services/product/ProductService";
 
 export class ShopService {
@@ -18,6 +19,10 @@ export class ShopService {
       ShopService.instance = new ShopService();
     }
     return ShopService.instance;
+  }
+
+  getCheckoutService(): CheckoutService {
+    return CheckoutService.getInstance();
   }
 
   async getClothingProducts(): Promise<ClothingProduct[]> {

@@ -1,8 +1,9 @@
 import prisma from "$lib/prisma";
 import { uploadProductImage } from "$lib/server/s3/upload";
+import type { Size, SizeInfo } from "$lib/types/shop/product/clothing";
 import type { ClothingProduct } from "$lib/types/shop/product/product";
 import type { CreateClothingDataPayload, CreateClothingProductPayload } from "$lib/types/shop/product/schemas";
-import type { ClothingData, Product as DBProduct, Prisma, ProductDomain } from "@prisma/client";
+import type { ClothingData, Product as DBProduct, Order, OrderItem, Prisma } from "@prisma/client";
 
 // NOTE: Right now, getting products only accounts for ClothingData types. If there are any other types in the future, you need to account for them.
 
@@ -104,6 +105,76 @@ export class ShopRepository {
     }
   }
 
+  // creates an order of clothing
+  async createOrder(
+    userId: string,
+    products: {
+      productId: number,
+      price: number,
+      details: Size
+    }[]
+  ): Promise<{
+    Order: Order,
+    OrderItems: OrderItem[]
+  }> {
+    const result = await prisma.$transaction(async (tx) => {
+      // calculate subtotal
+      const subtotal = products.reduce(
+        (sum, product) => sum + product.price, 0
+      );
+
+      // create order
+      const order = await tx.order.create({
+        data: {
+          userId,
+          paid: false,
+          subtotal
+        }
+      });
+
+      // create OrderItem for each product and associate them with order
+      // Use Promise.all to wait for all order items to be created
+      const orderItems = await Promise.all(
+        products.map((product) =>
+          this.createOrderItem(
+            order.id,
+            product.productId,
+            product.price,
+            product.details,
+            tx
+          )
+        )
+      );
+
+      // Return order with its items
+      return {
+        Order: order,
+        OrderItems: orderItems
+      };
+    });
+
+    return result;
+  }
+
+  private async createOrderItem(
+    orderId: string,
+    productId: number,
+    price: number,
+    details: Size,
+    tx: Prisma.TransactionClient
+  ): Promise<OrderItem> {
+    const result = await tx.orderItem.create({
+      data: {
+        orderId,
+        productId,
+        price,
+        details
+      }
+    });
+    return result;
+  };
+
+
   // takes an array of 3 buffers
   // order: front, back, detail
   // uploads the images to the s3 bucket returns result as urls
@@ -132,4 +203,5 @@ export class ShopRepository {
       }
     });
   }
+
 }

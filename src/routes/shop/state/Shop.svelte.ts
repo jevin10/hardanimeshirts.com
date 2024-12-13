@@ -14,7 +14,7 @@ export class Shop {
   products: SvelteMap<number, ClothingProduct> = $state(
     new SvelteMap<number, ClothingProduct>()
   );
-  bag: Bag = $state(new SvelteMap<string, ItemDetails>);
+  bag: SvelteMap<string, ItemDetails> = $state(new SvelteMap<string, ItemDetails>);
   location: Country = $state({ country: "United States", code: "US" });
 
   constructor() {
@@ -69,6 +69,21 @@ export class Shop {
   removeFromBag(itemKey: string) {
     this.bag.delete(itemKey);
   }
+
+  async checkoutBag(bag: Bag) {
+    console.log('bag state:', bag);
+    const bagArray: ItemDetails[] = Array.from(bag.values());
+    console.log(bagArray);
+    const result = await fetch('/api/shop/createCheckoutSession', {
+      method: 'POST',
+      body: JSON.stringify({
+        bag: bagArray,
+        location: this.location
+      })
+    });
+
+    console.log(result);
+  };
 }
 
 const SHOP_CTX = 'SHOP_CTX';

@@ -48,8 +48,11 @@
           <div class="text-sm">Shipping: {shipping}</div>
           <div class="text-sm">Total: ${subtotal}.00</div>
         </div>
-        <button class="text-sm px-3 py-1 text-white bg-black dark:text-black dark:bg-white"
-          >Proceed to checkout</button
+        <button
+          class="text-sm px-3 py-1 text-white bg-black dark:text-black dark:bg-white"
+          onclick={() => {
+            shopState.checkoutBag(bag);
+          }}>Proceed to checkout</button
         >
       </div>
       <div class="text-xs italic md:text-end">

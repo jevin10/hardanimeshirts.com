@@ -61,11 +61,7 @@
           >
         {/if}
       </div>
-      <div class="text-xs italic md:text-end">
-        Shipping and taxes are estimated at checkout.
-        <br />
-        Free shipping on orders above $150 USD.
-      </div>
+      <div class="text-xs italic md:text-end">Shipping and taxes are estimated at checkout.</div>
     </div>
   {/if}
 </div>

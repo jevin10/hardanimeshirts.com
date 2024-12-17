@@ -4,6 +4,8 @@ import { ShopRepository } from "../../repository/ShopRepository";
 import type { Country } from "$lib/shared/locations/countries";
 import { StripeService } from "$lib/server/stripe/StripeService";
 import { getShippingZone } from "$lib/shared/shop/shippingUtils";
+import { stripe } from "$lib/server/stripe/stripe";
+import prisma from "$lib/prisma";
 
 export class CheckoutService {
   private static instance: CheckoutService
@@ -52,7 +54,30 @@ export class CheckoutService {
 
     console.log('Order created!');
 
-    // TODO: convert items to sprice
     return await StripeService.getInstance().createCheckoutSession(products, order.OrderItems, order.Order.id, getShippingZone(location));
+  }
+
+  async fulfillCheckout(sessionId: string) {
+    const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ['line_items'],
+    });
+
+    // check if order is paid
+    if (checkoutSession.payment_status !== 'unpaid') {
+      const orderId: string | null = checkoutSession.client_reference_id;
+      if (!orderId) {
+        throw new Error('No order ID');
+      }
+      // update the order status in the database
+      await prisma.order.update({
+        where: {
+          id: orderId
+        },
+        data: {
+          paid: true,
+          updatedAt: new Date()
+        }
+      });
+    }
   }
 }

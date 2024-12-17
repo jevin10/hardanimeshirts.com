@@ -36,7 +36,7 @@ export class CheckoutSession {
 
   async create() {
     return await stripe.checkout.sessions.create({
-      success_url: this.successUrl,
+      success_url: this.successUrl + `?orderId=` + this.orderId,
       cancel_url: this.cancelUrl,
       client_reference_id: this.orderId,
       line_items: this.parseItems(this.items),

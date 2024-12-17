@@ -6,8 +6,9 @@
   import { getShopState, Shop } from './state/Shop.svelte';
   import { goto } from '$app/navigation';
   import LocationSelector from './components/LocationSelector.svelte';
+  import type { PageData } from '../$types';
 
-  let { children }: { children: Snippet } = $props();
+  let { children, data }: { children: Snippet; data: PageData } = $props();
   const shopState: Shop = getShopState();
 </script>
 
@@ -31,6 +32,19 @@
   </div>
   <LocationSelector />
   <div class="my-5">
-    {@render children()}
+    {#if data.user}
+      {@render children()}
+    {:else}
+      <div class="text-xl">The shop is members-only.</div>
+      <div class="text-base my-1">
+        If you would like an invite code, the easiest way to get one is to ask somebody that you
+        know who has it.
+      </div>
+      <div class="text-base mt-5">
+        If you really want to get in... there's a way. <br />
+        hardanimeshirts.com is an endless rabbithole. There's more to this website than meets the eye
+        ;)
+      </div>
+    {/if}
   </div>
 </div>

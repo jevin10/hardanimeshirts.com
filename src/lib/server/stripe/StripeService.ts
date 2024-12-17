@@ -4,16 +4,25 @@ import type { OrderItem } from "@prisma/client";
 import { CheckoutSession } from "./shipping/checkout/CheckoutSession";
 import { SPrice } from "./shipping/checkout/SPrice";
 import { SProduct } from "./shipping/checkout/SProduct";
+const BASE_URL = {
+  dev: 'http://localhost:5173',
+  prod: 'https://hardanimeshirts.com'
+};
 
-const DEV_URL = {
-  success: 'http://localhost:5173/shop/success',
-  cancel: 'http://localhost:5173/shop/cancel'
-}
+const getUrls = (isDev: boolean) => ({
+  success: `${isDev ? BASE_URL.dev : BASE_URL.prod}/shop/success`,
+  cancel: `${isDev ? BASE_URL.dev : BASE_URL.prod}/shop/cancel`
+});
 
 export class StripeService {
   private static instance: StripeService;
+  private readonly urls: ReturnType<typeof getUrls>;
 
-  constructor() { }
+  constructor() {
+    // Check if we're in development environment
+    const isDev = process.env.NODE_ENV !== 'production';
+    this.urls = getUrls(isDev);
+  }
 
   public static getInstance(): StripeService {
     if (!StripeService.instance) {
@@ -22,7 +31,6 @@ export class StripeService {
     return StripeService.instance;
   }
 
-  // NOTE: Change this to the actual url in production
   async createCheckoutSession(products: {
     name: string,
     description: string
@@ -32,8 +40,13 @@ export class StripeService {
     details: Size
   }[], orderItems: OrderItem[], orderId: string, shippingZone: ShippingZone) {
     const items: SPrice[] = this.parseProducts(products, orderItems);
-    const session = new CheckoutSession(DEV_URL.success, DEV_URL.cancel, items, orderId, shippingZone);
-
+    const session = new CheckoutSession(
+      this.urls.success,
+      this.urls.cancel,
+      items,
+      orderId,
+      shippingZone
+    );
     return await session.create();
   }
 

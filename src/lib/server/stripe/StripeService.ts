@@ -4,6 +4,7 @@ import type { OrderItem } from "@prisma/client";
 import { CheckoutSession } from "./shipping/checkout/CheckoutSession";
 import { SPrice } from "./shipping/checkout/SPrice";
 import { SProduct } from "./shipping/checkout/SProduct";
+
 const BASE_URL = {
   dev: 'http://localhost:5173',
   prod: 'https://hardanimeshirts.com'
@@ -20,7 +21,7 @@ export class StripeService {
 
   constructor() {
     // Check if we're in development environment
-    const isDev = process.env.NODE_ENV !== 'production';
+    const isDev = false;
     this.urls = getUrls(isDev);
   }
 

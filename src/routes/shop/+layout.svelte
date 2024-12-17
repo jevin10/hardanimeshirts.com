@@ -14,7 +14,7 @@
 
 <div class="my-10 mx-3">
   <Banner />
-  <PageTitle title={'shop'} subtitle={'Beauty is genius. Style is brilliance.'} />
+  <PageTitle title={'shop'} subtitle={"This isn't streetwear. This is neetwear."} />
   <div class="mt-5 px-2 border border-black dark:border-white flex flex-row justify-between">
     <button
       onclick={() => {

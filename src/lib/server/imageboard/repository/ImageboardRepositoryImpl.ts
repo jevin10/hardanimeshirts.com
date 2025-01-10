@@ -3,6 +3,8 @@ import type ImageboardRepository from "./ImageboardRepository";
 import prisma from "../../../prisma";
 import type { CreatePostPayload } from "$lib/types/ws/actions/schemas";
 import { error } from "@sveltejs/kit";
+import { uploadPostImage } from "$lib/server/s3/upload";
+import { v4 } from "uuid";
 
 export class ImageboardRepositoryImpl implements ImageboardRepository {
   /**
@@ -64,13 +66,25 @@ export class ImageboardRepositoryImpl implements ImageboardRepository {
 
   async uploadPost(params: CreatePostPayload): Promise<posts_new> {
     try {
-      console.log('Uploading post to db');
+      let imageUrl: string | null = null;
+
+      // convert image into file buffer
+      if (params.image) {
+        const imageArray = new Uint8Array(Object.values(params.image));
+        const buffer = Buffer.from(imageArray);
+        const imageId: string = v4();
+
+        // upload to s3 and get url
+        imageUrl = await uploadPostImage(imageId, buffer);
+      }
+
+      // create post
       const newPost = await prisma.posts_new.create({
         data: {
           board_id: params.boardId,
           content: params.content,
           user_id: params.username,
-          image_url: params.imageUrl,
+          image_url: imageUrl,
           parent_id: params.parentId
         }
       });
